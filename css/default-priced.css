@@ -1,0 +1,118 @@
+body {
+	background-color: black;
+}
+
+body div {
+	background-color: black;
+}
+
+.bar {
+	margin: 10px 0;
+	background-image: url('../clouds2.jpg');
+	height: 1px;
+}
+
+.header {
+	text-align: center;
+	font-size: 1.4em;
+	text-transform: uppercase;
+	letter-spacing: 0.4em;
+	font-family: 'Michroma';
+	color: #900;
+	margin-bottom: 15px;
+}
+
+h1 {
+	letter-spacing: 0.4em;
+	text-align: center;
+	color: #C00;
+	padding-bottom: 5px;
+	font-family: 'Michroma';
+}
+
+.outer {
+	padding: 30px 50px;
+}
+
+.side {
+	float: right;
+	width: 60%;
+	background-color: #eee;
+	border-radius: 25px;
+	overflow: auto;
+	margin-bottom: 20px;
+}
+
+.side-inner {
+	background-color: #eee;
+	padding: 25px;
+	font-size: 1.5em;
+	line-height: 1.2em;
+}
+
+.side-inner li {
+	margin: 15px 0px;
+	line-height: 1.2em;
+}
+
+.portals {
+	float: left;
+	width: 35%;
+}
+
+.portal {
+	margin: 0 0 50px 0px;
+	height: 200px;
+	border-radius: 25px;
+	background-color: #bbb;
+	box-shadow: 8px 4px 1px #900;
+}
+
+.portal:hover {
+	background-color: #999;
+}
+
+.portal a {
+	font-size: 2em;
+	color: white;
+	text-shadow: 2px 2px 1px #333;
+	font-family: 'Michroma';
+	line-height: 1.2em;
+	display: block;
+	text-align: center;
+	padding-top: 60px;
+}
+
+.portal a:hover {
+	text-decoration: none;
+}
+
+.portal:hover {
+	cursor: pointer;
+}
+
+.portal strong {
+	font-size: 1.5em;
+	color: #111;
+	font-family: 'Michroma';
+	display: block;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.product-description {
+	display: none;
+}
+
+.product-description h3 {
+	margin-top: 0;
+	line-height: 1em;
+}
+
+.contact-us {
+	padding-top: 0;
+}
+
+.side-inner a {
+	color: #700;
+}
