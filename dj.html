@@ -1,0 +1,133 @@
+
+<!doctype html>
+<html>
+<head>
+  <title>Red Sky Forge - Traktor Kontrol S2 + Macbook Twitch Streaming Guide</title>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
+  <style>
+  body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  body {
+    background: black;
+    position: relative;
+  }
+  * {
+    font-family: 'Quicksand', sans-serif;
+  }
+  #mars-o {
+    background: linear-gradient(to bottom, rgba(90,0,0,0.65) 0%,rgba(40,0,0,0.2) 50%);
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    right: 100px;
+    bottom: 100px;
+  }
+  .title {
+    letter-spacing: 3px;
+    margin: 20px;
+    padding: 0;
+    color: white;
+  }
+  h1 {
+    font-size: 21px;
+    line-height: 21px;
+  }
+  h2 {
+    font-size: 19px;
+    line-height: 20px;
+  }
+  h3 {
+    font-size: 17px;
+    line-height: 19px;
+  }
+  #sub-title {
+    color: white;
+    margin: 20px;
+    padding: 0;
+  }
+  #sub-title a {
+    color: #FFEEEE;
+    line-height: 20px;
+  }
+  #mars-ou {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    right: 100px;
+    bottom: 100px;
+  }
+  @media (max-width: 576px) {
+    #mars-o, #mars-ou {
+      top: 75px;
+      left: 75px;
+      right: 75px;
+      bottom: 75px;
+    }
+    #title {
+      margin: 5px;
+    }
+    #sub-title {
+      right: auto;
+      top: 30px;
+      left: 5px;
+    }
+  }
+  </style>
+</head>
+<body>
+  <div id='mars-ou'></div>
+  <div id='mars-o'>
+    <h1 class='title'>RED SKY FORGE</h1>
+    <h2 class='title'>Traktor Kontrol S2 + Macbook Twitch Streaming Guide</h2>
+    <div id='sub-title'>
+      <p>How to stream live to Twitch (or YouTube or any other online streaming service) with a Traktor Kontrol DJ controller
+      on a Macbook</p>
+      <p>This guide is the result of hours of Googling, YouTubing, and browsing forums. It assumes the following hardware setup
+        (or comparable):</p>
+      <ul>
+        <li>Macbook</li>
+        <li>Traktor Kontrol S2 (should work with other controllers too as it's a software approach)</li>
+        <li>Monitor speakers and microphone</li>
+      </ul>
+      <p>(For newer Macbooks, you'll also need some kind of USB-A -> USB-C adapter, but you probably already have that too)</p>
+
+      <p>First of all, a quick explanation of why I do it this way: I also own a Maya 4x4 USB soundcard, but this produced
+        significant ground noise (more than I remember when I used it with turntables). Although it was possible with some
+        levels management (ramp up MASTER on the controller till just before it clipped) to reduce this to almost negligible,
+        it meant that I then had to play with my monitors blasting out at speaker-damaging volume. Not great.</p>
+
+      <p>A lot of the credit should be given to Mixlr's excellent tutorial on 
+       <a href="http://help.mixlr.com/en/articles/996670-broadcast-using-traktor-s2-mac">how to broadcast with Mixlr with Traktor S2.</a>
+       This explained the hard part about how to setup the aggregate device and audio routing. To swap the configuration for other
+       streaming services was then relatively straightforward. Here we go.</p>
+
+      <ol>
+        <li>Download and install <a href="https://obsproject.com/">OBS Studio</a> (great free stream management software)</li>
+        <li>Download and install <a href="https://support.shinywhitebox.com/hc/en-us/articles/204161459-Installing-iShowU-Audio-Capture">iShowU
+          Audio Capture</a> (a sort of audio capture channel for MacOS that works with Traktor)</li>
+        <li>Open Audio MIDI Setup in MacOS and follow the instructions in the Mixlr tutorial to create an aggregate device from iShowU and
+          Traktor Kontrol S2 (let's assume we rename it to e.g. Traktor/Capture)</li>
+        <li>Open Traktor, go to preferences, Audio Setup and change the Audio Device to Traktor/Capture</li>
+        <li>Go to Output Routing and set the Output Record routing to Traktor/Capture</li>
+        <li>Go to Input Routing and in Input Aux ensure your Microphone (Mic In) is in there<br><br>
+          <i>...Almost there...</i><br><br>
+        </li>
+        <li>Open OBS, setup your video capture device (e.g. webcam), then go to Settings, Audio, and set Mic/Auxiliary Audio
+          to iShowU Audio Capture</li>
+        <li>Add your Twitch/YouTube stream key in the "Stream" settings</li>
+        <li>Click Start Streaming!</li>
+      </ol>
+
+      <p>If you enjoyed this guide or found it useful it would be great to hear it, give me a shout on
+        <a href="https://twitter.com/redskyforge">Twitter</a> or even better follow me on Twitch and drop in for a show sometime
+        from <a href="https://www.twitch.tv/redskyforgeradio">Red Sky Forge Radio</a>!</p>
+
+      <h4>Happy Streaming</h4>
+    </div>
+  </div>
+</body>
+</html>

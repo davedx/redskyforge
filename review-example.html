@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width" />
+  <title>Red Sky Forge - Software Consulting</title>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500" rel="stylesheet">
+  <style>
+  body, html {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  body {
+    background: black;
+    position: relative;
+  }
+  * {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+  }
+  #mars-o {
+    background: linear-gradient(to bottom, rgba(120,0,0,0.95) 0%, rgba(70,0,0,0.75) 90%);
+    margin: 100px 100px 0 100px;
+    padding: 30px;
+  }
+  .title {
+    letter-spacing: 3px;
+    margin: 20px;
+    padding: 0;
+    color: white;
+  }
+  h1 {
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+  h2 {
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 19px;
+  }
+  #mars-ou {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    right: 100px;
+    height: 100px;
+    background-image: url('rover-mars.jpg');
+    background-size: cover;
+  }
+  #text {
+    background: white;
+    color: black;
+    padding: 30px 80px 30px 50px;
+    font-size: 18px;
+    margin: 0 100px 100px 100px;
+  }
+  @media (max-width: 576px) {
+    #mars-o, #mars-ou {
+      top: 75px;
+      left: 75px;
+      right: 75px;
+      bottom: 75px;
+      margin: 0;
+      padding: 0;
+    }
+    .title {
+      margin: 0;
+      padding: 15px 15px;
+    }
+    #text {
+      margin: 0;
+      padding: 10px 15px;
+    }
+  }
+  p, li {
+    line-height: 28px;
+    margin-bottom: 15px;
+  }
+
+  strong {
+    font-weight: 500;
+  }
+
+  a {
+    color: #500;
+  }
+
+  .cta {
+    border: 1px solid #900;
+    background: #FDA;
+    padding: 20px;
+    margin: 40px 0;
+  }
+  </style>
+</head>
+<body>
+  <div id='mars-o'>
+    <h1 class='title' class='a100'>RED SKY FORGE</h1>
+    <h2 class='title' class='a100'>Software Review Example</h2>
+  </div>
+  <div id='text'>
+    <h1>Redskyforge Telecom Customer Dashboards</h1>
+
+    <h2>Software Review</h2>
+
+    <h3>Description of Software</h3>
+
+    <p>This report describes several customer dashboards for an imaginary telecommunications company "Redskyforge Telecom" that offers multiple products and services to its customers. The software applications developed and deployed alongside each other using the same technology (React JavaScript stack) and development teams. The imaginary software is loosely based on real projects I have worked on in the past in a technical lead or architect role.</p>
+
+    <div class='cta'>
+      This is an example software review report. To order a comprehensive review of your software, <a href='review.html'>get in touch</a> today.
+    </div>
+
+    <h3>Executive Summary</h3>
+
+    <p>The high level architecture of the dashboards is well defined, and the software demonstrates some degree of code reuse and component sharing. The deployment process is automated to a high degree, but dependencies between the different deployment jobs are not well defined which can result in client and API mismatches in production. Architectural practices are not always followed and some there are some minor security issues but overall quality is high. The largest issues are with code that is not shared between the dashboards, resulting in double work and technical debt when one implementation changes and the others do not. See the Action Points and Guidance section for how this can be improved.</p>
+
+    <h3>Positives</h3>
+
+    <p>In general, the high level architecture is well defined and separates layers and components of the application code appropriately. For example, the Services and Domain Orchestrators offer a good foundation for manipulation of data and grouping of business logic. Each service has a <a href='https://en.wikipedia.org/wiki/Single_responsibility_principle'>single responsibility</a> and does its job simply and well, and the interfaces are <a href='https://en.wikipedia.org/wiki/Interface_segregation_principle'>segregated</a> so that they depend only what is required for their specific functional area.</p>
+
+    <p>The domain orchestration layer is more complex but again, single responsibility principle is adhered to reasonably well. These two layers ensure that when data is put into the application's central state store, it is in the correct format required by the user interface, and mutation events from the user are also handled properly in the orchestration layer.</p>
+
+    <p>The dashboards share some common orchestration code such as authentication and authorization, and some of the user interface components are reused by the various dashboards. Data validation and user feedback are implemented consistently.</p>
+
+    <p>Inline code documentation is fair - more complex or tricky parts of code are often documented in source comments, and type information is often provided. I was able to run TypeScript's compiler on the service layers and generate type errors with only minor fixes to the type annotations, indicating they are wide-spread and accurate.</p>
+
+    <p>Automated test coverage is very good. Some modules with higher defect rates could have more tests, but tests are often added alongside bug fixes, and the test pyramid is reasonably well balanced. There are a lot more unit tests than integration tests and some of the end-to-end tests are commented out, indicating test maintenance could use some more attention. Tests are pragmatic and clear, and user interface components make excellent use of 'Jest' to test at both a unit and integration level, ensuring they work properly in isolation and also when composed together.</p>
+
+    <h3>Issues</h3>
+
+    <p>The issues I found fall into two general areas.</p>
+
+    <p>The first area (architectural patterns not always followed, not enough code re-use) is relatively minor and can be easily addressed with small, incremental refactorings. The use of standard front end libraries such as redux and redux-saga constrain the architecture and ensure implementations can only diverge so much.</p>
+
+    <p>The second area has some relations to the first but is more problematic: user interface controls use heavily customized and complex implementations. Some controls that have essentially the same functionality are re-implemented several times in different dashboards, for example the address lookup and email input controls. Given the target platforms are modern browsers, HTML5 features are underused, resulting in a lot of standard browser input funtionality being re-implemented by developers.</p>
+
+    <h3>1. Architectural patterns not always followed, not enough code re-use</h3>
+
+    <p><strong>Issue: business logic in store reducers</strong></p>
+    <p><strong>Example:</strong><br>
+    mobileBillReducer.js<br>
+    - loadCustomerAddresses() - this function should be moved to the orchestration layer so it can be more easily re-used in every dashboard<br>
+    - setCustomerName() - again there is business logic here that belongs in the orchestration layer. Customer name is a common data model used in every dashboard<br>
+    <strong>Impact:</strong><br>
+    - Too much responsibility in one source file: leads to more bugs and complexity, and too many dependencies on one module<br>
+    - Harder to re-use the functionality in the other dashboards if it is not in the service or orchestration layers<br>
+    <strong>Recommendations:</strong><br>
+    - Refactor all functions with significant business logic or data manipulation into the appropriate service or orchestration module<br>
+    - Ensure common code is moved to the /shared/ folder and similar implementations in the other dashboards use these ones instead</p>
+
+    <p><strong>Issue (security): session data is not always put in the correct store</strong></p>
+    <p><strong>Example:</strong><br>
+    cookiePreferences.js<br>
+    referals.js<br>
+    mktingCampaign3.js<br>
+    <strong>Impact:</strong><br>
+    - Various small but sensitive pieces of customer data are stored in different browser stores (cookies, localStorage, sessionStorage). This makes it harder to ensure all data is correctly set and reset, in particular when the user logs out, and can expose customers using public internet devices to data breaches.<br>
+    - The use of different ad-hoc modules to store what is essentially all temporary customer data makes maintenance more difficult and increases defects.<br>
+    <strong>Recommendations:</strong><br>
+    - Move all session data to one place.<br>
+    - Ensure session data, including authentication tokens, is put in sessionStorage.<br>
+    - Update developer documentation to clearly state where and how sensitive session data should be managed.</p>
+
+    <p><strong>Issue: implicit initialization in some services</strong></p>
+    <p><strong>Example:</strong><br>
+    adslSearchService.js (line 134)<br>
+    speedTestService.js (line 22)<br>
+    <strong>Impact:</strong><br>
+    - Modules that run code implicitly when they are imported can produce difficult to debug <a href='https://en.wikipedia.org/wiki/Race_condition'>race condition</a> issues<br>
+    - Implicit initialization is harder for developers to understand and reason about<br>
+    - Bugs can manifest on some systems but not others, for example on slower customer devices but not faster developer computers<br>
+    <strong>Recommendations:</strong><br>
+    - Refactor any implicit initialization code into functions that are explicitly invoked from a single point.<br>
+    - Update code standards documentation and communicate best practices to development team.</p>
+
+    <div class='cta'>
+      This is an example software review report. To order a comprehensive review of your software, <a href='review.html'>get in touch</a> today.
+    </div>
+
+    <h3>2. User interface controls use heavily customized and complex implementations</h3>
+
+    <p><strong>Issue: address lookup control overly complex and inconsistent</strong></p>
+    <p><strong>Example:</strong><br>
+    NewMobileAccount.jsx<br>
+    AddHomeInternet.jsx<br>
+    UpdatePrepayAddress.jsx<br>
+    <strong>Impact:</strong><br>
+    - Multiple implementations increase maintenance overhead and risk of defects<br>
+    - Overly complicated code is error prone and is difficult to extend and maintain<br>
+    - Onboarding new developers will take more time if code is hard to read<br>
+    <strong>Recommendations:</strong><br>
+    - The solution is to carefully refactor the controls into one common component<br>
+    - Before refactoring ensure unit test coverage of each control is as high as possible<br>
+    - Consider storing local control state locally in component instead of in central Redux store<br>
+    - If capacity allows, this is a good opportunity for the team to learn: assign the task to a senior developer <a href='https://en.wikipedia.org/wiki/Pair_programming'>paired</a> with a junior.</p>
+
+    <p><strong>Issue: email input control too complex</strong></p>
+    <p><strong>Example:</strong><br>
+    NewMobileAccount.jsx (lines 42 and 244)<br>
+    AddEmailAddress.jsx<br>
+    NewCustomer.jsx<br>
+    <strong>Impact:</strong><br>
+    - Custom regular expression could cause validation false negatives and <strong>lose new customers</strong> due to valid email addresses not being allowed<br>
+    - Frustration and increase support load if existing customers cannot change or add their email address<br>
+    <strong>Recommendations:</strong><br>
+    - Simplify the control to use HTML5 <a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email'>email input type</a> instead, using a code fallback with the same regular expression as the HTML5 specification<br>
+    - Ensure the web API uses an identical regular expression so server side validation matches client-side<br>
+    - Evaluate third party solutions such as <a href='https://email-checker.net/'>email-checker.net</a> for verifying email mailboxes (note: these services should be used to provide <strong>guidance only</strong> to new users. For example: 'This email address does not seem to be valid. Please check for typos, or press submit if you're sure it's correct')</p>
+
+    <h3>Action points and guidance</h3>
+
+    <p>In general, the software's architecture is clean and follows best practices for the language (ES6 JavaScript) and libraries (React, Redux) that are used. In addition to the specific issue recommendations, the following action points should be considered to improve the overall software development process. This guidance is in approximate priority order.</p>
+
+    <ul>
+      <li><strong>Define deployment process more strictly.</strong> Currently the CI system has multiple deploy jobs for the dashboards and the web API. Some of these jobs appear to be old or unmaintained, and should be removed to avoid accidentally running the wrong job. Deploying a breaking new API version (if semantic versioning is used, this is when the major version changes) should result in automatically re-deploying the dashboards (strong communication processes should be in place between API and front end teams to ensure code is kept in sync). Alternatively, investigate implementing API versioning.</li>
+      <li><strong>Write more integration tests.</strong> Unit test coverage is very good, but unit tests only catch one class of defects. It is recommended to also have a sufficient layer of integration tests to ensure components function correctly when used together. The orchestration layer is an area that would benefit here: defect analysis revealed 23 issues where the root cause was incorrect data processing or error handling when multiple services were invoked from orchestration modules. Ensure all developers are trained in how to write integration tests.</li>
+      <li><strong>Improve user interface error handling.</strong> Another cross cutting concern is how errors are handled throughout the user interface. While loading indicators are always shown, error conditions are often handled in an ad-hoc way, resulting in a poor user experience and increased support load when the client fails to obtain a valid API response in the dashboards. A single UI component should be used with a clear and understandable message. Also consider adding error reporting, for example using a third party service like <a href='https://sentry.io/welcome/'>Sentry</a>, so developers can monitor front end errors and see where the most problems occur.</li>
+      <li><strong>Conduct a performance review.</strong> Some dashboard components do very complex computations every UI update, which could result in degraded performance for users with slower computers or mobile devices. Although it may not be an issue, it can sometimes happen that these users are forgotten as developers always work with high powered desktop or laptop computers. When genuine performance bottlenecks are found in the user interface, investigate leveraging React's tooling to reduce over-enthusiastic UI updates, for example by implementing <a href='https://reactjs.org/docs/react-component.html#shouldcomponentupdate'>shouldComponentUpdate</a> where necessary. Libraries such as <a href='https://github.com/reduxjs/reselect'>reselect</a> can also ensure derived data is not needlessly recomputed every update.</li>
+    </ul>
+
+    <div class='cta'>
+      This is an example software review report. To order a comprehensive review of your software, <a href='review.html'>get in touch</a> today.
+    </div>
+
+  </div>
+</body>
+</html>
