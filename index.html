@@ -1,127 +1,401 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <title>Red Sky Forge - Energy, A.I. Software Consulting</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Sky Forge - Software Engineering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css?family=Quicksand:300"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650;800&family=Space+Grotesk:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <style>
-      body,
-      html {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        margin: 0;
+      :root {
+        color-scheme: dark;
+        --ink: #f7f4ec;
+        --muted: #b9b0a2;
+        --paper: #11100e;
+        --panel: #1b1915;
+        --line: rgba(247, 244, 236, 0.18);
+        --red: #ff4d35;
+        --gold: #e6b85c;
+        --green: #6bd6a7;
+        --blue: #74b8ff;
       }
-      body {
-        background: black;
-        position: relative;
-      }
+
       * {
-        font-family: "Quicksand", sans-serif;
+        box-sizing: border-box;
       }
-      #mars-o {
-        background: linear-gradient(
-          to bottom,
-          rgba(90, 0, 0, 0.65) 0%,
-          rgba(40, 0, 0, 0.2) 50%
-        );
-        position: absolute;
-        top: 100px;
-        left: 100px;
-        right: 100px;
-        bottom: 100px;
+
+      html {
+        min-height: 100%;
+        background: var(--paper);
       }
-      .title {
-        letter-spacing: 3px;
-        margin: 20px;
-        padding: 0;
-        color: white;
-      }
-      h1 {
-        font-size: 21px;
-        line-height: 21px;
-      }
-      h2 {
-        font-size: 19px;
-        line-height: 20px;
-      }
-      h3 {
-        font-size: 17px;
-        line-height: 19px;
-      }
-      #sub-title {
-        position: absolute;
-        top: 20px;
-        right: 20px;
+
+      body {
+        min-height: 100%;
         margin: 0;
-        padding: 0;
-        text-align: right;
+        color: var(--ink);
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(255, 77, 53, 0.2),
+            transparent 34rem
+          ),
+          linear-gradient(135deg, rgba(230, 184, 92, 0.1), transparent 28rem),
+          var(--paper);
       }
-      #sub-title a {
-        color: white;
-        letter-spacing: 3px;
-        font-size: 19px;
-        line-height: 20px;
-        display: block;
-        margin-bottom: 20px;
-      }
-      #mars-ou {
-        position: absolute;
-        top: 100px;
-        left: 100px;
-        right: 100px;
-        bottom: 100px;
-        background-image: url("rover-mars.jpg");
-        background-size: cover;
-      }
-      #mars-bl {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-      }
+
       a {
-        color: white;
-        letter-spacing: 2px;
-        font-size: 19px;
+        color: inherit;
+        text-decoration: none;
       }
-      @media (max-width: 576px) {
-        #mars-o,
-        #mars-ou {
-          top: 75px;
-          left: 75px;
-          right: 75px;
-          bottom: 75px;
+
+      .page {
+        width: min(1180px, calc(100% - 40px));
+        min-height: 100vh;
+        margin: 0 auto;
+        display: grid;
+        grid-template-rows: 1fr auto;
+      }
+
+      main {
+        padding: clamp(36px, 7vw, 96px) 0 54px;
+      }
+
+      .intro {
+        display: grid;
+        grid-template-columns: minmax(240px, 0.55fr) minmax(300px, 1.45fr);
+        gap: clamp(28px, 6vw, 80px);
+        align-items: end;
+        padding-bottom: clamp(36px, 6vw, 70px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .kicker {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(1.1rem, 2vw, 1.45rem);
+        line-height: 1.45;
+        max-width: 28rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: clamp(3.6rem, 10vw, 9.5rem);
+        line-height: 0.88;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: clamp(34px, 5vw, 64px);
+        border: 1px solid var(--line);
+        background: var(--line);
+      }
+
+      .project {
+        min-height: clamp(260px, 32vw, 420px);
+        padding: clamp(22px, 3vw, 38px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
+          var(--panel);
+        transition:
+          transform 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .project:hover {
+        transform: translateY(-8px);
+        background-color: #242017;
+      }
+
+      .project:nth-child(2) {
+        background:
+          linear-gradient(180deg, rgba(107, 214, 167, 0.14), transparent),
+          var(--panel);
+      }
+
+      .project-index {
+        color: var(--muted);
+        font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+        font-weight: 500;
+      }
+
+      .project h2 {
+        margin: 0;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: clamp(2.7rem, 5vw, 5.4rem);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .project > div {
+        display: grid;
+        grid-template-rows: auto minmax(4.2em, auto) auto;
+        align-items: start;
+      }
+
+      .project p {
+        margin: 22px 0 0;
+        color: var(--muted);
+        font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+        line-height: 1.35;
+      }
+
+      .project-arrow {
+        align-self: flex-start;
+        margin-top: 32px;
+        font-size: clamp(2rem, 4vw, 4rem);
+        line-height: 1;
+      }
+
+      .apps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 1px;
+        border: 1px solid var(--line);
+        border-top: 0;
+        background: var(--line);
+      }
+
+      .app {
+        min-height: 190px;
+        padding: clamp(18px, 2.2vw, 28px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: rgba(27, 25, 21, 0.72);
+      }
+
+      .app-index {
+        color: rgba(185, 176, 162, 0.72);
+        font-size: 0.88rem;
+        font-weight: 500;
+      }
+
+      .app h2 {
+        margin: 0;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: clamp(1.8rem, 2.6vw, 3rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .app > div {
+        display: grid;
+        grid-template-rows: auto minmax(3.9em, auto);
+        align-items: start;
+      }
+
+      .app p {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.25vw, 1.12rem);
+        line-height: 1.35;
+      }
+
+      footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: end;
+        padding: 28px 0 34px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      .company {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+
+      .company strong {
+        color: var(--ink);
+        font-weight: 650;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 18px;
+      }
+
+      .footer-links a {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-color: rgba(247, 244, 236, 0.36);
+        text-underline-offset: 4px;
+      }
+
+      @media (max-width: 860px) {
+        .intro,
+        footer {
+          grid-template-columns: 1fr;
         }
-        #title {
-          margin: 5px;
+
+        .projects {
+          grid-template-columns: 1fr;
         }
-        #sub-title {
-          right: auto;
-          top: 30px;
-          left: 5px;
+
+        .apps {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .project {
+          min-height: 250px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .page {
+          width: min(100% - 26px, 1180px);
+        }
+
+        main {
+          padding-top: 28px;
+        }
+
+        .footer-links {
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .apps {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <div id="mars-ou"></div>
-    <div id="mars-o">
-      <h1 class="title">RED SKY FORGE</h1>
-      <h2 class="title">Software Engineering</h2>
-      <h3 class="title">Energy, AI</h3>
-      <h4 class="title">BTW NL366274582B02</h4>
-      <h4 class="title">KVK 69834660</h4>
-      <h4 class="title">0634796837 / davedx@gmail.com</h4>
-      <div id="sub-title">
-        <a href="https://davedx.github.io/mars-power/">Mars Power</a>
-        <a href="/ef">Electric Flight</a>
-        <a href="https://techposts.eu">Tech News and Jobs for Europe</a>
-      </div>
-      <div id="mars-bl">
-        <a href="https://www.linkedin.com/in/daveclayton78/">LinkedIn</a>
-      </div>
+    <div class="page">
+      <main>
+        <section class="intro" aria-label="Software engineering practice">
+          <p class="kicker">
+            Freelance software engineering for product teams that need sharp
+            execution, pragmatic architecture, and systems that survive real
+            users.
+          </p>
+          <h1>Project-shaped software work.</h1>
+        </section>
+
+        <section class="projects" aria-label="Projects">
+          <a class="project" href="https://octoloops.com/">
+            <span class="project-index">01</span>
+            <div>
+              <h2>OctoLoops</h2>
+              <p>Agent workspaces for indie distribution.</p>
+              <span class="project-arrow" aria-hidden="true">-></span>
+            </div>
+          </a>
+
+          <a class="project" href="https://startupdb.eu/">
+            <span class="project-index">02</span>
+            <div>
+              <h2>StartupDb.eu</h2>
+              <p>A database of European startups.</p>
+              <span class="project-arrow" aria-hidden="true">-></span>
+            </div>
+          </a>
+        </section>
+
+        <section class="apps" aria-label="Smaller apps">
+          <a class="app" href="https://davedx.github.io/mars-power/">
+            <span class="app-index">01</span>
+            <div>
+              <h2>Mars Power</h2>
+              <p>A planning simulator for exploring energy on Mars.</p>
+            </div>
+          </a>
+
+          <a class="app" href="/ef">
+            <span class="app-index">02</span>
+            <div>
+              <h2>Electric Flight</h2>
+              <p>A calculator for electric aircraft range.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://marketraid.us/">
+            <span class="app-index">03</span>
+            <div>
+              <h2>MarketRaid</h2>
+              <p>Diamond-hand the S&amp;P 500 like a WoW raid healer.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://straitsweeper.com/">
+            <span class="app-index">04</span>
+            <div>
+              <h2>StraitSweeper</h2>
+              <p>A Minesweeper clone set in the Strait of Hormuz.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://github.com/davedx/cosmicgpt">
+            <span class="app-index">05</span>
+            <div>
+              <h2>cosmicgpt</h2>
+              <p>A GPT-in-space simulator.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://github.com/davedx/pid_simulator">
+            <span class="app-index">06</span>
+            <div>
+              <h2>pid_simulator</h2>
+              <p>A PID control system in C.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://github.com/davedx/solar-charge">
+            <span class="app-index">07</span>
+            <div>
+              <h2>solar-charge</h2>
+              <p>App to charge EVs from PV.</p>
+            </div>
+          </a>
+
+          <a class="app" href="https://github.com/davedx/algo-trading-tsla">
+            <span class="app-index">08</span>
+            <div>
+              <h2>algo-trading</h2>
+              <p>Algorithmic trading script.</p>
+            </div>
+          </a>
+        </section>
+      </main>
+
+      <footer>
+        <div class="company" aria-label="Company details">
+          <strong>Red Sky Forge</strong>
+          <span>Software Engineering ZZP</span>
+          <span>BTW NL002474526B54</span>
+          <span>KVK 69834660</span>
+        </div>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="https://x.com/TechPostsEU">X</a>
+          <a href="https://www.linkedin.com/in/daveclayton78/">LinkedIn</a>
+        </nav>
+      </footer>
     </div>
   </body>
 </html>
