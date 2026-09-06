@@ -97,11 +97,88 @@
         text-wrap: balance;
       }
 
+      .section-label {
+        margin: clamp(34px, 5vw, 64px) 0 14px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .products {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        border: 1px solid var(--line);
+        background: var(--line);
+      }
+
+      .product {
+        min-height: clamp(300px, 34vw, 390px);
+        padding: clamp(22px, 3vw, 34px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background:
+          linear-gradient(180deg, rgba(255, 77, 53, 0.13), transparent 65%),
+          var(--panel);
+        transition:
+          transform 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .product:nth-child(2) {
+        background:
+          linear-gradient(180deg, rgba(230, 184, 92, 0.14), transparent 65%),
+          var(--panel);
+      }
+
+      .product:nth-child(3) {
+        background:
+          linear-gradient(180deg, rgba(116, 184, 255, 0.13), transparent 65%),
+          var(--panel);
+      }
+
+      .product:hover {
+        transform: translateY(-8px);
+        background-color: #242017;
+      }
+
+      .product-index {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .product h2 {
+        margin: 0;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: clamp(2.1rem, 3.5vw, 3.8rem);
+        line-height: 0.92;
+        overflow-wrap: anywhere;
+      }
+
+      .product p {
+        min-height: 4.2em;
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.35vw, 1.2rem);
+        line-height: 1.4;
+      }
+
+      .product-arrow {
+        display: block;
+        margin-top: 24px;
+        font-size: clamp(2rem, 3vw, 3rem);
+        line-height: 1;
+      }
+
       .projects {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1px;
-        margin-top: clamp(34px, 5vw, 64px);
+        margin-top: 0;
         border: 1px solid var(--line);
         background: var(--line);
       }
@@ -256,6 +333,14 @@
           grid-template-columns: 1fr;
         }
 
+        .products {
+          grid-template-columns: 1fr;
+        }
+
+        .product {
+          min-height: 260px;
+        }
+
         .apps {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -297,7 +382,46 @@
           <h1>Project-shaped software work.</h1>
         </section>
 
-        <section class="projects" aria-label="Projects">
+        <p class="section-label">Latest products</p>
+        <section class="products" aria-label="Latest products">
+          <a class="product" href="https://processpush.com/">
+            <span class="product-index">01 / ClickUp</span>
+            <div>
+              <h2>ProcessPush</h2>
+              <p>
+                Deploy workflow changes across every client workspace from one
+                master process.
+              </p>
+              <span class="product-arrow" aria-hidden="true">-&gt;</span>
+            </div>
+          </a>
+
+          <a class="product" href="https://bookcheck.app/">
+            <span class="product-index">02 / QuickBooks</span>
+            <div>
+              <h2>BookCheck</h2>
+              <p>
+                Review every client company faster by focusing your team on the
+                exceptions.
+              </p>
+              <span class="product-arrow" aria-hidden="true">-&gt;</span>
+            </div>
+          </a>
+
+          <a class="product" href="https://slareporter.com/">
+            <span class="product-index">03 / Zendesk</span>
+            <div>
+              <h2>SLA Reporter</h2>
+              <p>
+                Create and send branded, client-ready SLA reports automatically.
+              </p>
+              <span class="product-arrow" aria-hidden="true">-&gt;</span>
+            </div>
+          </a>
+        </section>
+
+        <p class="section-label">Selected work</p>
+        <section class="projects" aria-label="Selected work">
           <a class="project" href="https://octoloops.com/">
             <span class="project-index">01</span>
             <div>
