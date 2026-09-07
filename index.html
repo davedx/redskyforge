@@ -72,26 +72,14 @@
       }
 
       .intro {
-        display: grid;
-        grid-template-columns: minmax(240px, 0.55fr) minmax(300px, 1.45fr);
-        gap: clamp(28px, 6vw, 80px);
-        align-items: end;
         padding-bottom: clamp(36px, 6vw, 70px);
         border-bottom: 1px solid var(--line);
-      }
-
-      .kicker {
-        margin: 0;
-        color: var(--muted);
-        font-size: clamp(1.1rem, 2vw, 1.45rem);
-        line-height: 1.45;
-        max-width: 28rem;
       }
 
       h1 {
         margin: 0;
         font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(3.6rem, 10vw, 9.5rem);
+        font-size: clamp(2.9rem, 8vw, 7.5rem);
         line-height: 0.88;
         letter-spacing: 0;
         text-wrap: balance;
@@ -108,7 +96,7 @@
 
       .products {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1px;
         border: 1px solid var(--line);
         background: var(--line);
@@ -176,7 +164,7 @@
 
       .projects {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1px;
         margin-top: 0;
         border: 1px solid var(--line);
@@ -208,6 +196,12 @@
           var(--panel);
       }
 
+      .project:nth-child(3) {
+        background:
+          linear-gradient(180deg, rgba(116, 184, 255, 0.13), transparent),
+          var(--panel);
+      }
+
       .project-index {
         color: var(--muted);
         font-size: clamp(0.95rem, 1.3vw, 1.1rem);
@@ -217,9 +211,10 @@
       .project h2 {
         margin: 0;
         font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(2.7rem, 5vw, 5rem);
+        font-size: clamp(2.4rem, 3.8vw, 3.6rem);
         line-height: 0.9;
         letter-spacing: 0;
+        overflow-wrap: anywhere;
       }
 
       .project > div {
@@ -324,7 +319,6 @@
       }
 
       @media (max-width: 860px) {
-        .intro,
         footer {
           grid-template-columns: 1fr;
         }
@@ -373,47 +367,30 @@
   <body>
     <div class="page">
       <main>
-        <section class="intro" aria-label="Software engineering practice">
-          <p class="kicker">
-            Freelance software engineering for product teams that need sharp
-            execution, pragmatic architecture, and systems that survive real
-            users.
-          </p>
-          <h1>Project-shaped software work.</h1>
+        <section class="intro" aria-label="Red Sky Forge">
+          <h1>RED SKY FORGE</h1>
         </section>
 
         <p class="section-label">Latest products</p>
         <section class="products" aria-label="Latest products">
-          <a class="product" href="https://processpush.com/">
-            <span class="product-index">01 / ClickUp</span>
+          <a class="product" href="https://riverfish.uk/">
+            <span class="product-index">01 / River data</span>
             <div>
-              <h2>ProcessPush</h2>
+              <h2>River Records</h2>
               <p>
-                Deploy workflow changes across every client workspace from one
-                master process.
+                Freshwater fish evidence from Environment Agency river surveys.
               </p>
               <span class="product-arrow" aria-hidden="true">-&gt;</span>
             </div>
           </a>
 
-          <a class="product" href="https://bookcheck.app/">
-            <span class="product-index">02 / QuickBooks</span>
+          <a class="product" href="https://modelrigs.com/">
+            <span class="product-index">02 / Local AI</span>
             <div>
-              <h2>BookCheck</h2>
+              <h2>ModelRigs</h2>
               <p>
-                Review every client company faster by focusing your team on the
-                exceptions.
-              </p>
-              <span class="product-arrow" aria-hidden="true">-&gt;</span>
-            </div>
-          </a>
-
-          <a class="product" href="https://slareporter.com/">
-            <span class="product-index">03 / Zendesk</span>
-            <div>
-              <h2>SLA Reporter</h2>
-              <p>
-                Create and send branded, client-ready SLA reports automatically.
+                Compare local AI hardware on memory fit, measured throughput,
+                and cost of ownership.
               </p>
               <span class="product-arrow" aria-hidden="true">-&gt;</span>
             </div>
@@ -431,11 +408,26 @@
             </div>
           </a>
 
-          <a class="project" href="https://startupdb.eu/">
+          <a class="project" href="https://processpush.com/">
             <span class="project-index">02</span>
             <div>
-              <h2>StartupDb.eu</h2>
-              <p>A database of European startups.</p>
+              <h2>ProcessPush</h2>
+              <p>
+                Deploy workflow changes across every ClickUp client workspace
+                from one master process.
+              </p>
+              <span class="project-arrow" aria-hidden="true">-></span>
+            </div>
+          </a>
+
+          <a class="project" href="https://bookcheck.app/">
+            <span class="project-index">03</span>
+            <div>
+              <h2>BookCheck</h2>
+              <p>
+                Review every QuickBooks client company faster by focusing your
+                team on the exceptions.
+              </p>
               <span class="project-arrow" aria-hidden="true">-></span>
             </div>
           </a>
