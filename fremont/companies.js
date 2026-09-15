@@ -3,9 +3,9 @@ window.FREMONT_SECTORS = {
   robotics: { name: "Robotics & Physical AI", short: "ROBOTICS", color: "#ff3d5a" },
   mobility: { name: "EVs & Autonomy",          short: "MOBILITY", color: "#ff5fd2" },
   batteries:{ name: "Batteries & Storage",     short: "BATTERY",  color: "#ffcf33" },
-  energy:   { name: "Solar & Power Electronics", short: "POWER",  color: "#5ef28a" },
-  semi:     { name: "Chipmaking Equipment",    short: "SEMI",     color: "#35d6ff" },
-  compute:  { name: "AI Servers & Storage",    short: "COMPUTE",  color: "#9d7cff" },
+  energy:   { name: "Energy & Power",          short: "ENERGY",   color: "#5ef28a" },
+  semi:     { name: "Chipmaking & Test",       short: "SEMI",     color: "#35d6ff" },
+  compute:  { name: "AI Hardware & Storage",   short: "COMPUTE",  color: "#9d7cff" },
   quantum:  { name: "Quantum Computing",       short: "QUANTUM",  color: "#e4e9ff" },
   mfg:      { name: "Advanced Manufacturing",  short: "MFG",      color: "#ff9535" }
 };
@@ -230,5 +230,175 @@ window.FREMONT_COMPANIES = [
     facts: [
       "SpaceX has been a flagship customer",
       "Known for printing complex internal channels with fewer support structures"
+    ] },
+
+  // ---- added Sept 2026: per-sector sweep ----
+  { id: "milmont", name: "Tesla · Milmont Campus", sector: "robotics", tier: 3, stage: "Megacorp site",
+    ticker: "NASDAQ: TSLA", founded: "Leased 2026", address: "49000 Milmont Dr", footprint: "~267,000 sq ft",
+    what: "Heavy-power industrial space leased for Tesla's 2026 Optimus push, with the high ceilings and electrical capacity that robot manufacturing needs.",
+    facts: [
+      "With Research Ave, Tesla leased ~375,000 sq ft of R&D space in Fremont in Q1 2026",
+      "At Fremont's southern tip, right by the Milpitas line"
+    ] },
+  { id: "kuka", name: "KUKA West Coast", sector: "robotics", tier: 3, stage: "Megacorp site",
+    ticker: "Private (Midea Group)", founded: "1898 (parent)", address: "48820 Kato Rd, Ste 500B", footprint: "Technology center",
+    what: "West Coast technology center for KUKA, the German industrial robot maker, where engineers test custom robot cells before they go into a customer's plant.",
+    facts: [
+      "Includes an Electronics TechCenter for trying out automation before deploying it",
+      "Its demos walk through the stages of human–robot collaboration",
+      "KUKA's orange arms are a fixture of car body shops worldwide"
+    ] },
+  { id: "everest", name: "EverestLabs", sector: "robotics", tier: 1, stage: "Startup",
+    ticker: "Private", founded: "—", address: "48820 Kato Rd", footprint: "HQ + Robot Ops Center",
+    what: "AI vision and robot arms that pick recyclables off fast-moving conveyor lines at materials recovery facilities.",
+    facts: [
+      "Runs a 24-hour Robot Operation Center that remotely monitors its robots in recycling plants",
+      "Engineering teams in Fremont and Chennai, India",
+      "Listed in the same Kato Rd complex as KUKA's tech center"
+    ] },
+  { id: "think", name: "THINK Surgical", sector: "robotics", tier: 2, stage: "Growth company",
+    ticker: "Private", founded: "2007", address: "47201 Lakeview Blvd", footprint: "HQ",
+    what: "Surgical robots for joint replacement, including the TMINI miniature robotic system for total knee replacement.",
+    facts: [
+      "Headquartered in the Warm Springs district on Lakeview Blvd",
+      "TMINI is a miniature, handheld-scale system, far smaller than room-sized surgical robots"
+    ] },
+  { id: "trobotics", name: "T-Robotics", sector: "robotics", tier: 1, stage: "Startup",
+    ticker: "Private", founded: "—", address: "4051 Clipper Ct", footprint: "US HQ",
+    what: "ActGPT, an AI software platform that brings built-in intelligence to industrial robots so they can be set up for new tasks without traditional robot programming.",
+    facts: [
+      "Dual-headquartered in Fremont and Trondheim, Norway",
+      "Part of a wave of AI-for-robotics software startups setting up next to Fremont's factories"
+    ] },
+  { id: "hai", name: "HAI Robotics US", sector: "robotics", tier: 2, stage: "Global scaleup",
+    ticker: "Private", founded: "2016", address: "40748 Encyclopedia Cir", footprint: "US demo center",
+    what: "Autonomous case-handling robots (ACR) that climb warehouse racks to pick and deliver totes and cartons.",
+    facts: [
+      "Opened its first US demo center here in January 2022",
+      "Shenzhen-based HAI is one of the largest makers of tote-picking warehouse robots"
+    ] },
+  { id: "ponyai", name: "Pony.ai", sector: "mobility", tier: 2, stage: "Public",
+    ticker: "NASDAQ: PONY", founded: "2016", address: "3501 Gateway Blvd", footprint: "US HQ",
+    what: "Level 4 self-driving software and robotaxi fleets, mostly operating in Chinese cities.",
+    facts: [
+      "Dual headquarters in Guangzhou and Fremont",
+      "Listed on Nasdaq in late 2024"
+    ] },
+  { id: "inceptio", name: "Inceptio Technology", sector: "mobility", tier: 1, stage: "Scaleup",
+    ticker: "Private", founded: "2018", address: "47221 Fremont Blvd", footprint: "Silicon Valley R&D center",
+    what: "Autonomous driving systems for heavy-duty trucks, running on long-haul freight networks in China.",
+    facts: [
+      "Opened its Fremont R&D center in 2019",
+      "Trucks run for customers including Budweiser, Nestlé and JD Logistics",
+      "Holds a California autonomous-vehicle testing permit (2020)"
+    ] },
+  { id: "deeproute", name: "DeepRoute.ai", sector: "mobility", tier: 1, stage: "Scaleup",
+    ticker: "Private", founded: "2019", address: "3125 Skyway Ct", footprint: "US office",
+    what: "Self-driving and advanced driver-assist software for passenger cars.",
+    facts: [
+      "Shenzhen-based, with its US entity registered in Fremont",
+      "Files autonomous-vehicle reports with the California Public Utilities Commission"
+    ] },
+  { id: "tel", name: "Tokyo Electron America", sector: "semi", tier: 3, stage: "Megacorp",
+    ticker: "TSE: 8035 (parent)", founded: "1963 (parent)", address: "2859 Bayview Dr", footprint: "Fremont office",
+    what: "Deposition, etch, coater/developer and cleaning tools from Japan's largest chip equipment maker.",
+    facts: [
+      "One of the world's top chip tool makers, alongside Lam, Applied Materials and ASML",
+      "Its coater/developers pair with nearly every EUV lithography scanner"
+    ] },
+  { id: "mattson", name: "Mattson Technology", sector: "semi", tier: 2, stage: "Global subsidiary",
+    ticker: "Private", founded: "1988", address: "47131 Bayside Pkwy", footprint: "HQ",
+    what: "Dry strip, rapid thermal processing and plasma etch equipment for chip fabs.",
+    facts: [
+      "Founded in Fremont in 1988",
+      "Acquired in 2016 by Beijing E-Town Dragon Semiconductor"
+    ] },
+  { id: "nova", name: "Nova", sector: "semi", tier: 2, stage: "Public",
+    ticker: "NASDAQ: NVMI", founded: "1993", address: "3342 Gateway Blvd", footprint: "US office",
+    what: "Metrology systems (optical, X-ray and chemical) that measure chip features during manufacturing.",
+    facts: [
+      "Headquartered in Rehovot, Israel",
+      "Measurement gets harder, and more valuable, as transistors and packages go 3D"
+    ] },
+  { id: "brooks", name: "Brooks Automation", sector: "semi", tier: 2, stage: "Private",
+    ticker: "Private", founded: "1978", address: "46702 Bayside Pkwy", footprint: "Design & manufacturing",
+    what: "Wafer-handling robots, fab automation and contamination control for chipmakers.",
+    facts: [
+      "More than 100,000 of its automation systems run around the clock in fabs",
+      "The Fremont site designs and builds semiconductor production machinery",
+      "Headquartered in Chelmsford, MA"
+    ] },
+  { id: "iselabs", name: "ISE Labs", sector: "semi", tier: 2, stage: "ASE subsidiary",
+    ticker: "Private (ASE Group)", founded: "1983", address: "46800 Bayside Pkwy", footprint: "HQ + test floor",
+    what: "Chip testing services: wafer probe, final test, qualification, reliability testing and failure analysis.",
+    facts: [
+      "Says it is the largest semiconductor test service provider in the US",
+      "Part of ASE, the world's largest chip packaging and test company",
+      "Bought two more buildings in North San Jose for $29.5M (2026)"
+    ] },
+  { id: "yes", name: "Yield Engineering Systems", sector: "semi", tier: 1, stage: "Scaleup",
+    ticker: "Private", founded: "—", address: "3178 Laurelview Ct", footprint: "HQ",
+    what: "Vacuum cure, anneal and coating tools used in advanced packaging, the step that stacks and links chips for AI accelerators.",
+    facts: [
+      "Has delivered 1,000+ tools to more than 100 fabs worldwide",
+      "Rides the advanced-packaging bottleneck created by AI chip demand"
+    ] },
+  { id: "i2a", name: "i2a Technologies", sector: "semi", tier: 1, stage: "Private",
+    ticker: "Private", founded: "—", address: "3399 W Warren Ave", footprint: "Packaging facility",
+    what: "IC packaging and wafer bumping services for chip companies that need assembly done in Silicon Valley.",
+    facts: [
+      "Added wafer bumping capacity to meet rising orders",
+      "One of a small number of chip packaging houses still operating in the Valley"
+    ] },
+  { id: "accretech", name: "Accretech America", sector: "semi", tier: 2, stage: "Global subsidiary",
+    ticker: "TSE: 7729 (parent)", founded: "1949 (parent)", address: "47265 Fremont Blvd", footprint: "US office",
+    what: "US arm of Tokyo Seimitsu, which makes wafer probers, dicing machines and grinders for chip back-end processing.",
+    facts: [
+      "Its probers test chips while they're still on the wafer, before dicing",
+      "Exhibits at SEMICON West"
+    ] },
+  { id: "supermicro", name: "Supermicro", sector: "compute", tier: 3, stage: "Megacorp",
+    ticker: "NASDAQ: SMCI", founded: "1993", address: "48350 Fremont Blvd", footprint: "Fremont facility",
+    what: "AI and data-center servers, including liquid-cooled GPU racks.",
+    facts: [
+      "Headquartered in San Jose, with added Bay Area space in Fremont",
+      "Named among the big AI server makers with a Fremont presence"
+    ] },
+  { id: "alpine", name: "Alpine Optoelectronics", sector: "compute", tier: 1, stage: "Scaleup",
+    ticker: "Private", founded: "2017", address: "3191 Laurelview Ct", footprint: "HQ",
+    what: "Silicon photonics optical transceivers (100G–800G) that link servers and switches inside AI data centers.",
+    facts: [
+      "Built on its in-house nCP4 silicon photonics PAM4 modulator platform",
+      "Makes its optical engine on Tower Semiconductor's silicon photonics process"
+    ] },
+  { id: "pacfusion", name: "Pacific Fusion", sector: "energy", tier: 2, stage: "Startup · Series A",
+    ticker: "Private", founded: "2023", address: "6082 Stewart Ave", footprint: "HQ",
+    what: "Pulser-driven magnetic fusion: fast, high-current pulses squeeze fuel to fusion conditions, using a machine built from mass-producible modules.",
+    facts: [
+      "Raised a $900M+ Series A (2024) led by General Catalyst",
+      "Led by Eric Lander, a principal leader of the Human Genome Project",
+      "Aims for net facility gain: more fusion energy out than all the energy stored in"
+    ] },
+  { id: "sonic", name: "Sonic Manufacturing", sector: "mfg", tier: 2, stage: "Private",
+    ticker: "Private", founded: "—", address: "47951 Westinghouse Dr", footprint: "~120,000 sq ft",
+    what: "An electronics and full-system contract manufacturer. It builds DoorDash's Dot autonomous delivery robot here in Fremont.",
+    facts: [
+      "DoorDash unveiled Dot, co-developed with Sonic, in September 2025",
+      "Dot made its first public deliveries in Fremont in 2026",
+      "DoorDash Labs engineers work alongside Sonic's factory team"
+    ] },
+  { id: "owens", name: "Owens Design (AIR)", sector: "mfg", tier: 1, stage: "Acquired 2025",
+    ticker: "Private", founded: "1983", address: "47427 Fremont Blvd", footprint: "Design & build shop",
+    what: "Designs and builds custom, low-volume production equipment for hard tech companies in semiconductors, batteries, solar and medical devices.",
+    facts: [
+      "Acquired by Automated Industrial Robotics in August 2025",
+      "The kind of shop startups use to go from prototype to pilot line"
+    ] },
+  { id: "printerprezz", name: "PrinterPrezz", sector: "mfg", tier: 1, stage: "Startup",
+    ticker: "Private", founded: "—", address: "47929 Fremont Blvd", footprint: "HQ",
+    what: "Combines metal 3D printing and nanotechnology to make next-generation medical implants and devices.",
+    facts: [
+      "Picked Fremont for its headquarters in 2019",
+      "Now associated with Zeda, Inc., an advanced manufacturing company"
     ] }
 ];
