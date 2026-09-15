@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏭</text></svg>">
+<title>Fremont Hardware City</title>
+<meta name="description" content="Interactive 3D map of the Warm Springs deeptech corridor in Fremont, California.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #060a14;
+    --ink-2: #0c1224;
+    --panel: rgba(10, 15, 31, 0.84);
+    --hair: #243053;
+    --hair-2: #34426e;
+    --text: #e8ecf7;
+    --muted: #8a96b9;
+    --dim: #5b6689;
+    --sodium: #ffc36b;
+    --display: "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
+    --body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body { margin: 0; background: var(--ink); color: var(--text); font-family: var(--body); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--sodium); outline-offset: 2px; }
+
+  #stage { position: fixed; inset: 0; }
+  #stage canvas { display: block; touch-action: none; }
+  #labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+
+  /* ---------- brand block ---------- */
+  .brand { position: fixed; top: 20px; left: 24px; pointer-events: none; max-width: 420px; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--sodium); display: flex; gap: 10px; align-items: center; }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--sodium); }
+  .brand h1 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 6.4vw, 84px); line-height: .82; letter-spacing: .005em; margin: 10px 0 8px; text-transform: uppercase; text-wrap: balance;
+    background: linear-gradient(180deg, #ffffff 0%, #c9d3f5 62%, #7d8bc0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .brand h1 span { display: block; }
+  .brand p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; max-width: 34ch; }
+  .stats { display: flex; gap: 22px; margin-top: 14px; font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; }
+  .stats b { display: block; font-family: var(--display); font-weight: 800; font-size: 26px; color: var(--text); letter-spacing: 0; line-height: 1; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- legend ---------- */
+  .legend { position: fixed; left: 24px; bottom: 76px; width: 244px; background: var(--panel); border: 1px solid var(--hair); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 12px 10px 10px; }
+  .legend h2 { margin: 0 6px 8px; font-family: var(--mono); font-weight: 500; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+  .legend h2 button { background: none; border: 0; padding: 0; color: var(--sodium); cursor: pointer; letter-spacing: .12em; font-size: 10.5px; text-transform: uppercase; }
+  .legend h2 button[hidden] { display: none; }
+  .sectors { display: grid; gap: 1px; }
+  .sec { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 10px; width: 100%; text-align: left; background: transparent; border: 0; padding: 7px 6px; cursor: pointer; color: var(--text); font-size: 13.5px; font-weight: 500; transition: background .15s, opacity .15s; }
+  .sec:hover { background: rgba(255,255,255,.05); }
+  .sec i { width: 12px; height: 12px; background: var(--c); box-shadow: 0 0 10px var(--c); transform: rotate(45deg) scale(.8); }
+  .sec em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .legend.filtering .sec:not(.on) { opacity: .38; }
+  .sec.on { background: rgba(255,255,255,.06); }
+
+  /* ---------- labels ---------- */
+  .tag { position: absolute; z-index: 2; left: 0; top: 0; pointer-events: auto; cursor: pointer; border: 0; padding: 0; background: none; white-space: nowrap; will-change: transform; transition: opacity .25s; }
+  .tag .card { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 7px; background: rgba(8, 12, 26, .86); border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); box-shadow: 0 0 18px -6px var(--c); transition: transform .18s, background .18s; }
+  .tag .dot { width: 9px; height: 9px; flex: none; background: var(--c); box-shadow: 0 0 8px var(--c); transform: rotate(45deg); }
+  .tag .nm { font-family: var(--display); font-weight: 800; font-size: 16px; letter-spacing: .02em; text-transform: uppercase; line-height: 1; color: #fff; }
+  .tag .mt { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; color: var(--c); line-height: 1; }
+  .tag.t3 .nm { font-size: 19px; }
+  .tag:hover .card, .tag.sel .card { background: color-mix(in srgb, var(--c) 26%, #0a0f1f); transform: translateY(-2px); }
+  .tag.min .card { padding: 0; border: 0; background: none; box-shadow: none; }
+  .tag.min .nm, .tag.min .mt { display: none; }
+  .tag.min .dot { width: 11px; height: 11px; border: 2px solid #060a14; }
+  .tag.min:hover { z-index: 5; }
+  .tag.min:hover .card { padding: 5px 10px 5px 7px; background: rgba(8,12,26,.94); border: 1px solid var(--c); }
+  .tag.min:hover .nm, .tag.min:hover .mt { display: inline; }
+  .tag.sel { z-index: 6; }
+  .tag.faded { opacity: .12; pointer-events: none; }
+  .tag.off { display: none; }
+  .lm { position: absolute; z-index: 1; left: 0; top: 0; transition: opacity .3s; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #7f8cb4; white-space: nowrap; will-change: transform; text-shadow: 0 0 6px #060a14, 0 0 2px #060a14; }
+  .lm.far:not(.shield):not(.peak) { opacity: 0; }
+  .lm.shield { font-weight: 500; color: #dfe6ff; background: #1c3f91; border: 1px solid #6c8ee0; padding: 2px 6px 1px; letter-spacing: .06em; border-radius: 2px 2px 8px 8px; text-shadow: none; }
+  .lm.peak { color: var(--sodium); }
+  .lm.coord { color: #56618a; font-size: 9.5px; letter-spacing: .08em; }
+
+  /* ---------- info panel ---------- */
+  .panel { position: fixed; top: 16px; right: 16px; bottom: 76px; width: min(380px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--hair); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); display: flex; flex-direction: column; transform: translateX(calc(100% + 24px)); transition: transform .45s cubic-bezier(.2,.8,.2,1); overflow: hidden; }
+  .panel.open { transform: none; }
+  .panel::before { content: ""; position: absolute; inset: 0 0 auto; height: 160px; background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--c, #fff) 26%, transparent), transparent 70%); pointer-events: none; }
+  .p-head { position: relative; padding: 18px 20px 14px; border-bottom: 1px solid var(--hair); }
+  .p-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+  .chip i { width: 8px; height: 8px; background: var(--c); transform: rotate(45deg); box-shadow: 0 0 8px var(--c); }
+  .iconbtn { width: 32px; height: 32px; display: grid; place-items: center; background: transparent; border: 1px solid var(--hair); cursor: pointer; color: var(--muted); }
+  .iconbtn:hover { color: var(--text); border-color: var(--hair-2); background: rgba(255,255,255,.04); }
+  .p-head h3 { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: 40px; line-height: .9; margin: 12px 0 10px; letter-spacing: .005em; text-wrap: balance; }
+  .stage { display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 7px; border: 1px solid var(--hair-2); color: var(--text); }
+  .p-body { position: relative; padding: 16px 20px 20px; overflow-y: auto; display: grid; gap: 18px; align-content: start; }
+  .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+  .kv div { background: var(--ink-2); padding: 9px 10px; min-width: 0; }
+  .kv dt { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+  .kv dd { margin: 0; font-size: 13.5px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+  .kv .wide { grid-column: 1 / -1; }
+  .p-body h4 { margin: 0 0 6px; font-family: var(--mono); font-weight: 500; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .p-body p { margin: 0; font-size: 15px; line-height: 1.5; color: #d3d9ec; }
+  .facts { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .facts li { display: grid; grid-template-columns: 14px 1fr; gap: 8px; font-size: 14px; line-height: 1.45; color: #c3cae0; }
+  .facts li::before { content: ""; width: 5px; height: 5px; margin-top: 8px; background: var(--c); transform: rotate(45deg); }
+  .coords { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .04em; }
+  .p-foot { margin-top: auto; display: grid; grid-template-columns: auto 1fr auto; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--hair); align-items: center; }
+  .p-foot .idx { text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* ---------- bottom bar ---------- */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 16px; padding-inline: 24px; background: linear-gradient(0deg, rgba(6,10,20,.95), rgba(6,10,20,0)); pointer-events: none; }
+  .bar > * { pointer-events: auto; }
+  .hint { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: .06em; display: flex; gap: 14px; flex-wrap: wrap; }
+  .hint kbd { font-family: inherit; color: var(--text); }
+  .scale { display: grid; gap: 3px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .scale .rule { height: 6px; border: 1px solid #8a96b9; border-top: 0; width: 100px; transition: width .1s; }
+  .attr { margin-left: auto; font-family: var(--mono); font-size: 9.5px; color: var(--dim); text-align: right; line-height: 1.5; }
+  .attr a { color: var(--muted); }
+  .dock { position: fixed; right: 16px; bottom: 76px; display: flex; flex-direction: column; gap: 6px; transition: right .45s cubic-bezier(.2,.8,.2,1); }
+  body.panel-open .dock { right: calc(min(380px, 100vw - 32px) + 28px); }
+  .dock .grp { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--hair); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .dock button { width: 40px; height: 40px; display: grid; place-items: center; background: none; border: 0; cursor: pointer; color: #c6cde4; }
+  .dock .grp button + button { border-top: 1px solid var(--hair); }
+  .dock button:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .dock svg { width: 18px; height: 18px; }
+  #compass svg { width: 26px; height: 26px; transition: transform .05s linear; }
+  .tour { position: fixed; top: 20px; right: 16px; display: flex; gap: 8px; transition: opacity .3s; }
+  body.panel-open .tour { opacity: 0; pointer-events: none; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; background: var(--panel); border: 1px solid var(--hair-2); cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text); }
+  .btn:hover { border-color: var(--sodium); color: var(--sodium); }
+  .btn.primary { border-color: var(--sodium); color: #0a0f1f; background: var(--sodium); }
+  .btn.primary:hover { background: #ffd796; color: #0a0f1f; }
+  .btn.small { padding: 7px 10px; }
+  .tourbar { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--c, var(--sodium)); width: 0; }
+
+  .loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--ink); z-index: 20; transition: opacity .8s; font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--muted); text-transform: uppercase; }
+  .loading.done { opacity: 0; pointer-events: none; }
+  .err { color: #ff8a8a; max-width: 40ch; text-align: center; line-height: 1.6; letter-spacing: .06em; }
+
+  @media (max-width: 760px) {
+    .brand { top: 14px; left: 16px; right: 16px; }
+    .brand h1 { font-size: 44px; margin: 6px 0 4px; }
+    .brand p, .stats { display: none; }
+    .legend { left: 0; right: 0; bottom: 56px; width: auto; padding: 8px 16px; border-inline: 0; }
+    .legend h2 { display: none; }
+    .sectors { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; gap: 4px; scrollbar-width: none; }
+    .sec { grid-template-columns: 12px auto auto; padding: 6px 8px; font-size: 12.5px; }
+    .dock { bottom: 130px; }
+    body.panel-open .dock { right: 16px; opacity: 0; pointer-events: none; }
+    .panel { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-height: 68vh; transform: translateY(105%); z-index: 10; }
+    .panel.open { transform: none; }
+    .p-head h3 { font-size: 32px; }
+    .hint { display: none; }
+    .tour { top: 14px; }
+    .bar { padding-inline: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel, .dock, .tag, .tag .card { transition: none; }
+  }
+</style>
+
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+
+<header class="brand">
+  <div class="eyebrow">Fremont, CA · 94538 / 94539</div>
+  <h1><span>Hardware</span><span>City</span></h1>
+  <p>The Warm Springs deeptech corridor, from Auto Mall Parkway to the Milpitas line.</p>
+  <div class="stats">
+    <div><b id="stat-sites">24</b>sites</div>
+    <div><b>8</b>sectors</div>
+    <div><b>9×8</b>km</div>
+  </div>
+</header>
+
+<div class="tour">
+  <button class="btn primary" id="tour-btn" type="button">
+    <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5 9.5 5 1 9.5z" fill="currentColor"/></svg>
+    <span>Take the tour</span>
+  </button>
+</div>
+
+<nav class="legend" id="legend" aria-label="Sectors">
+  <h2><span>Sectors</span><button type="button" id="show-all" hidden>Show all</button></h2>
+  <div class="sectors" id="sectors"></div>
+</nav>
+
+<aside class="panel" id="panel" aria-live="polite" aria-label="Company details">
+  <div class="p-head">
+    <div class="p-top">
+      <span class="chip" id="p-chip"><i></i><span></span></span>
+      <button class="iconbtn" id="p-close" type="button" aria-label="Close details">
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1l10 10M11 1 1 11" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+    </div>
+    <h3 id="p-name"></h3>
+    <span class="stage" id="p-stage"></span>
+  </div>
+  <div class="p-body">
+    <dl class="kv" id="p-kv"></dl>
+    <section><h4>What they build</h4><p id="p-what"></p></section>
+    <section><h4>Why it matters here</h4><ul class="facts" id="p-facts"></ul></section>
+    <div class="coords" id="p-coords"></div>
+  </div>
+  <div class="p-foot">
+    <button class="btn small" id="p-prev" type="button" aria-label="Previous company">← Prev</button>
+    <div class="idx" id="p-idx"></div>
+    <button class="btn small" id="p-next" type="button" aria-label="Next company">Next →</button>
+  </div>
+  <div class="tourbar" id="tourbar"></div>
+</aside>
+
+<div class="dock" aria-label="View controls">
+  <div class="grp">
+    <button type="button" id="compass" title="Reset to north-up" aria-label="Reset to north-up">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="#34426e"/><path d="M13 3 16 13H10z" fill="#ff3d5a"/><path d="M13 23 10 13h6z" fill="#8a96b9"/><text x="13" y="2.6" font-size="0" fill="#fff">N</text></svg>
+    </button>
+  </div>
+  <div class="grp">
+    <button type="button" id="zin" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    <button type="button" id="zout" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h12" stroke="currentColor" stroke-width="1.6"/></svg></button>
+  </div>
+  <div class="grp">
+    <button type="button" id="rotl" aria-label="Rotate left" title="Rotate left (Q)"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 7a6 6 0 1 1 0 5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 4.5 4 8l3.5-2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    <button type="button" id="rotr" aria-label="Rotate right" title="Rotate right (E)"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M14 7a6 6 0 1 0 0 5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16.5 4.5 14 8l-3.5-2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    <button type="button" id="tilt" aria-label="Toggle 3D tilt" title="Toggle top-down / 3D (T)"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 12 9 15l7-3M2 12l7-3 7 3M9 9V2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <button type="button" id="reset" aria-label="Reset view" title="Reset view (R)"><svg viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="3" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="9" r="1.8" fill="currentColor"/></svg></button>
+  </div>
+</div>
+
+<footer class="bar">
+  <div class="scale" aria-hidden="true"><div class="rule" id="scale-rule"></div><span id="scale-txt">1 km</span></div>
+  <div class="hint">
+    <span><kbd>Drag</kbd> pan</span><span><kbd>Right-drag</kbd> / <kbd>Q E</kbd> rotate</span><span><kbd>Scroll</kbd> zoom</span><span><kbd>Click</kbd> a building</span>
+  </div>
+  <div class="attr">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · heights exaggerated 3×<br>Company facts compiled Sept 2026 from public sources: verify before citing</div>
+</footer>
+
+<div class="loading" id="loading">Extruding 19,000 buildings…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="data.js"></script>
+<script src="companies.js"></script>
+<script>
+(function () {
+  "use strict";
+  const loadingEl = document.getElementById("loading");
+  if (!window.THREE || !THREE.MapControls || !window.FREMONT_DATA) {
+    loadingEl.innerHTML = '<div class="err">The 3D engine or map data didn’t load. Check your connection and reload the page.</div>';
+    return;
+  }
+
+  const D = window.FREMONT_DATA;
+  const SECTORS = window.FREMONT_SECTORS;
+  const COMPANIES = window.FREMONT_COMPANIES;
+  const V = 3;                       // vertical exaggeration
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [LAT0, LON0] = D.center, [KX, KZ] = D.k;
+  const toXZ = (lat, lon) => [(lon - LON0) * KX, -(lat - LAT0) * KZ];
+  const toLL = (x, z) => [LAT0 - z / KZ, LON0 + x / KX];
+  const [[BX0, BZ0], [BX1, BZ1]] = D.bbox;   // NW, SE
+
+  // ---------- renderer ----------
+  const stage = document.getElementById("stage");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x060a14);
+  stage.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x060a14, 0.00005);
+  const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 20, 80000);
+
+  const controls = new THREE.MapControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.screenSpacePanning = false;
+  controls.minDistance = 220;
+  controls.maxDistance = 17000;
+  controls.maxPolarAngle = 1.36;
+  controls.zoomSpeed = 1.1;
+  controls.rotateSpeed = 0.6;
+
+  // ---------- helpers ----------
+  const col = new THREE.Color();
+  function pts(flat, start = 0) { const out = []; for (let i = start; i < flat.length; i += 2) out.push([flat[i], flat[i + 1]]); return out; }
+  function geomFrom(pos, colr) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    if (colr) g.setAttribute("color", new THREE.Float32BufferAttribute(colr, 3));
+    return g;
+  }
+  function flatLayer(pos, colr, order, opacity = 1) {
+    const m = new THREE.Mesh(geomFrom(pos, colr), new THREE.MeshBasicMaterial({ vertexColors: true, depthWrite: false, depthTest: false, transparent: opacity < 1, opacity, fog: true }));
+    m.renderOrder = order; m.frustumCulled = false; scene.add(m); return m;
+  }
+  function pushPoly(ring, y, c, pos, colr) {
+    if (ring.length < 3) return;
+    const contour = ring.map(p => new THREE.Vector2(p[0], p[1]));
+    if (contour[0].equals(contour[contour.length - 1])) contour.pop();
+    if (contour.length < 3) return;
+    const tris = THREE.ShapeUtils.triangulateShape(contour, []);
+    for (const t of tris) for (const k of t) { pos.push(contour[k].x, y, contour[k].y); colr.push(c.r, c.g, c.b); }
+  }
+
+  // ---------- ground: map sheet with km grid ----------
+  const groundMat = new THREE.ShaderMaterial({
+    uniforms: { bmin: { value: new THREE.Vector2(BX0, BZ0) }, bmax: { value: new THREE.Vector2(BX1, BZ1) } },
+    vertexShader: `varying vec2 vP; void main(){ vec4 w = modelMatrix*vec4(position,1.); vP = w.xz; gl_Position = projectionMatrix*viewMatrix*w; }`,
+    fragmentShader: `
+      uniform vec2 bmin, bmax; varying vec2 vP;
+      float grid(vec2 p, float s){ vec2 q = p/s; vec2 g = abs(fract(q-.5)-.5)/fwidth(q); return 1.-min(min(g.x,g.y),1.); }
+      void main(){
+        vec2 c = (bmin+bmax)*.5; vec2 hs = (bmax-bmin)*.5;
+        vec2 d = abs(vP-c)-hs; float outside = length(max(d,0.));
+        float inside = 1.-smoothstep(0., 2200., outside);
+        vec3 base = mix(vec3(.018,.028,.055), vec3(.031,.045,.086), inside);
+        float g1 = grid(vP, 1000.)*.10*inside; float g2 = grid(vP, 250.)*.035*inside;
+        vec3 lineC = vec3(.30,.38,.62);
+        float vign = 1.-smoothstep(4000., 16000., length(vP-c));
+        gl_FragColor = vec4((base + lineC*(g1+g2))*mix(.55,1.,vign), 1.);
+      }`,
+    depthWrite: false, depthTest: false
+  });
+  groundMat.extensions = { derivatives: true };
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60000, 60000).rotateX(-Math.PI / 2), groundMat);
+  ground.renderOrder = 0; ground.frustumCulled = false; scene.add(ground);
+
+  // ---------- land use + water ----------
+  {
+    const LAND = { industrial: 0x0f1834, commercial: 0x111a36, retail: 0x111a36, residential: 0x0b1224, park: 0x0b2024, grass: 0x0b2024, meadow: 0x0b2024, golf_course: 0x0c2226, recreation_ground: 0x0b2024 };
+    const pos = [], colr = [];
+    for (const [kind, flat] of D.land) {
+      const r = pts(flat); if (r.length < 4 || r[0][0] !== r[r.length - 1][0] || r[0][1] !== r[r.length - 1][1]) continue;
+      pushPoly(r, 0, col.setHex(LAND[kind] || 0x0d1428), pos, colr);
+    }
+    flatLayer(pos, colr, 1);
+    const wpos = [], wcol = [];
+    for (const [kind, flat] of D.water) {
+      const r = pts(flat); if (r.length < 4 || r[0][0] !== r[r.length - 1][0] || r[0][1] !== r[r.length - 1][1]) continue;
+      pushPoly(r, 0, col.setHex(kind === "wetland" ? 0x0a1e2c : 0x0b2446), wpos, wcol);
+    }
+    flatLayer(wpos, wcol, 2);
+  }
+
+  // ---------- roads (ribbons) ----------
+  const ROAD = {
+    residential: [7, 0x1a2544], unclassified: [7, 0x1a2544], service: [6, 0x1a2544],
+    tertiary: [11, 0x24325a], secondary: [15, 0x2c3c6c], primary: [19, 0x34477e],
+    trunk: [24, 0x3d5290], motorway: [30, 0x4a5f9f]
+  };
+  const ORDER = ["residential", "unclassified", "service", "tertiary", "secondary", "primary", "trunk", "motorway"];
+  function ribbon(line, w, c, pos, colr) {
+    for (let i = 0; i < line.length - 1; i++) {
+      const [x1, z1] = line[i], [x2, z2] = line[i + 1];
+      let dx = x2 - x1, dz = z2 - z1; const L = Math.hypot(dx, dz) || 1; dx /= L; dz /= L;
+      const ex = dx * w * 0.5, ez = dz * w * 0.5, nx = -dz * w * 0.5, nz = dx * w * 0.5;
+      const ax = x1 - ex, az = z1 - ez, bx = x2 + ex, bz = z2 + ez;
+      pos.push(ax + nx, 0, az + nz, ax - nx, 0, az - nz, bx + nx, 0, bz + nz, ax - nx, 0, az - nz, bx - nx, 0, bz - nz, bx + nx, 0, bz + nz);
+      for (let k = 0; k < 6; k++) colr.push(c.r, c.g, c.b);
+    }
+  }
+  {
+    const pos = [], colr = [];
+    for (const k of ORDER) { const lines = D.roads[k]; if (!lines) continue; const [w, h] = ROAD[k]; col.setHex(h); for (const f of lines) ribbon(pts(f), w, col, pos, colr); }
+    flatLayer(pos, colr, 3);
+    // rail: thin bright ribbons (BART + UP)
+    const rpos = [], rcol = []; col.setHex(0x5f7dd6);
+    for (const f of D.rail) ribbon(pts(f), 4, col, rpos, rcol);
+    flatLayer(rpos, rcol, 4, 0.9);
+    const wpos = [], wcol = []; col.setHex(0x12325e);
+    for (const f of D.ww) ribbon(pts(f), 8, col, wpos, wcol);
+    flatLayer(wpos, wcol, 2);
+  }
+
+  // ---------- map frame with km ticks + city limit ----------
+  {
+    const P = [], y = 1;
+    const seg = (a, b, c, d) => P.push(a, y, b, c, y, d);
+    seg(BX0, BZ0, BX1, BZ0); seg(BX1, BZ0, BX1, BZ1); seg(BX1, BZ1, BX0, BZ1); seg(BX0, BZ1, BX0, BZ0);
+    for (let x = Math.ceil(BX0 / 1000) * 1000; x <= BX1; x += 1000) { seg(x, BZ0, x, BZ0 - 90); seg(x, BZ1, x, BZ1 + 90); }
+    for (let z = Math.ceil(BZ0 / 1000) * 1000; z <= BZ1; z += 1000) { seg(BX0, z, BX0 - 90, z); seg(BX1, z, BX1 + 90, z); }
+    const frame = new THREE.LineSegments(geomFrom(P), new THREE.LineBasicMaterial({ color: 0x4a5a8c, transparent: true, opacity: 0.7, depthTest: false }));
+    frame.renderOrder = 5; scene.add(frame);
+
+    const bmat = new THREE.LineDashedMaterial({ color: 0xffc36b, dashSize: 60, gapSize: 40, transparent: true, opacity: 0.8, depthTest: false });
+    for (const f of D.bound) {
+      const g = new THREE.BufferGeometry().setFromPoints(pts(f).map(p => new THREE.Vector3(p[0], 2, p[1])));
+      const l = new THREE.Line(g, bmat); l.computeLineDistances(); l.renderOrder = 5; scene.add(l);
+    }
+  }
+
+  // ---------- generic buildings ----------
+  const LIGHT = new THREE.Vector2(-0.55, -0.83).normalize();
+  const companyBuildingIdx = new Set(Object.values(D.comp).map(c => c.b));
+  function extrude(ring, h, colBottom, colTop, colRoof, pos, colr, edges) {
+    const n = ring.length;
+    for (let i = 0; i < n; i++) {
+      const [x1, z1] = ring[i], [x2, z2] = ring[(i + 1) % n];
+      const ex = x2 - x1, ez = z2 - z1, L = Math.hypot(ex, ez) || 1;
+      const shade = 0.62 + 0.5 * Math.abs((ez * LIGHT.x - ex * LIGHT.y) / L);
+      const br = colBottom.r * shade, bg = colBottom.g * shade, bb = colBottom.b * shade;
+      const tr = colTop.r * shade, tg = colTop.g * shade, tb = colTop.b * shade;
+      pos.push(x1, 0, z1, x2, 0, z2, x2, h, z2, x1, 0, z1, x2, h, z2, x1, h, z1);
+      colr.push(br, bg, bb, br, bg, bb, tr, tg, tb, br, bg, bb, tr, tg, tb, tr, tg, tb);
+      if (edges) edges.push(x1, h, z1, x2, h, z2);
+    }
+    pushPoly(ring, h, colRoof, pos, colr);
+  }
+  {
+    const pos = [], colr = [], edges = [];
+    const cb = new THREE.Color(0x080c19), ct = new THREE.Color(), cr = new THREE.Color();
+    D.b.forEach((b, i) => {
+      if (companyBuildingIdx.has(i)) return;
+      const h = b[0] * V; const ring = pts(b, 1);
+      const big = h > 30;
+      ct.setHex(big ? 0x33447a : 0x26325a); cr.setHex(big ? 0x3a4c86 : 0x2a3762);
+      extrude(ring, h, cb, ct, cr, pos, colr, big ? edges : null);
+    });
+    const mesh = new THREE.Mesh(geomFrom(pos, colr), new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide }));
+    mesh.renderOrder = 10; scene.add(mesh);
+    const lines = new THREE.LineSegments(geomFrom(edges), new THREE.LineBasicMaterial({ color: 0x4c62a6, transparent: true, opacity: 0.55 }));
+    lines.renderOrder = 11; scene.add(lines);
+  }
+
+  // ---------- traffic on the freeways ----------
+  const traffic = [];
+  {
+    const paths = [];
+    for (const k of ["motorway", "trunk", "primary"]) for (const f of (D.roads[k] || [])) {
+      const p = pts(f); let L = 0; const cum = [0];
+      for (let i = 1; i < p.length; i++) { L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); cum.push(L); }
+      if (L > 250) paths.push({ p, cum, L, w: k === "motorway" ? 1 : 0.35 });
+    }
+    const total = paths.reduce((s, p) => s + p.L * p.w, 0);
+    const N = 1600;
+    const posArr = new Float32Array(N * 3), colArr = new Float32Array(N * 3);
+    const head = new THREE.Color(0xffe2a8), tail = new THREE.Color(0xff3b4a);
+    for (let i = 0; i < N; i++) {
+      let r = Math.random() * total, path = paths[0];
+      for (const p of paths) { r -= p.L * p.w; if (r <= 0) { path = p; break; } }
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      traffic.push({ path, s: Math.random() * path.L, v: (path.w === 1 ? 26 : 13) * (0.7 + Math.random() * 0.6) * dir, off: dir * (path.w === 1 ? 6 : 3) });
+      const c = dir > 0 ? head : tail; colArr.set([c.r, c.g, c.b], i * 3);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(posArr, 3));
+    g.setAttribute("color", new THREE.BufferAttribute(colArr, 3));
+    const cv = document.createElement("canvas"); cv.width = cv.height = 64;
+    const cx = cv.getContext("2d"); const grd = cx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,255,255,1)"); grd.addColorStop(0.3, "rgba(255,255,255,.6)"); grd.addColorStop(1, "rgba(255,255,255,0)");
+    cx.fillStyle = grd; cx.fillRect(0, 0, 64, 64);
+    const mat = new THREE.PointsMaterial({ size: 22, map: new THREE.CanvasTexture(cv), vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    const pts3 = new THREE.Points(g, mat); pts3.renderOrder = 12; pts3.frustumCulled = false; scene.add(pts3);
+    traffic.geom = g; traffic.arr = posArr;
+  }
+  function stepTraffic(dt) {
+    const a = traffic.arr;
+    for (let i = 0; i < traffic.length; i++) {
+      const t = traffic[i], P = t.path;
+      t.s += t.v * dt; if (t.s > P.L) t.s -= P.L; if (t.s < 0) t.s += P.L;
+      let lo = 0, hi = P.cum.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (P.cum[m] <= t.s) lo = m; else hi = m; }
+      const [x1, z1] = P.p[lo], [x2, z2] = P.p[hi];
+      const seg = P.cum[hi] - P.cum[lo] || 1, f = (t.s - P.cum[lo]) / seg;
+      const dx = (x2 - x1) / seg, dz = (z2 - z1) / seg;
+      a[i * 3] = x1 + (x2 - x1) * f - dz * t.off; a[i * 3 + 1] = 4; a[i * 3 + 2] = z1 + (z2 - z1) * f + dx * t.off;
+    }
+    traffic.geom.attributes.position.needsUpdate = true;
+  }
+
+  // ---------- company buildings, beacons, labels ----------
+  const labelsEl = document.getElementById("labels");
+  const pickables = [];
+  const beamMat = (c) => new THREE.ShaderMaterial({
+    uniforms: { c: { value: new THREE.Color(c) }, t: { value: 0 }, a: { value: 1 } },
+    vertexShader: `varying float vY; void main(){ vY = uv.y; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader: `uniform vec3 c; uniform float t, a; varying float vY;
+      void main(){ float f = pow(1.-vY, 1.6); float band = .35+.65*smoothstep(.0,.08, abs(fract(vY*3.-t*.35)-.5)); gl_FragColor = vec4(c*1.6, f*.85*band*a); }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide
+  });
+
+  const sites = COMPANIES.filter(c => D.comp[c.id]).map((c, i) => {
+    const info = D.comp[c.id], sec = SECTORS[c.sector];
+    const cHex = new THREE.Color(sec.color);
+    const b = D.b[info.b]; const ring = pts(b, 1);
+    let cx = 0, cz = 0; ring.forEach(p => { cx += p[0]; cz += p[1]; }); cx /= ring.length; cz /= ring.length;
+    // anchor near the geocoded address when the footprint is huge (e.g. Tesla)
+    const ax = ring.length > 0 && Math.hypot(info.x - cx, info.z - cz) < 250 ? (cx + info.x) / 2 : cx;
+    const az = ring.length > 0 && Math.hypot(info.x - cx, info.z - cz) < 250 ? (cz + info.z) / 2 : cz;
+    const h = Math.max(b[0] * V * (c.tier === 3 ? 2 : 1.6), c.tier === 3 ? 80 : 58);
+
+    const pos = [], colr = [], edges = [];
+    const cb = cHex.clone().multiplyScalar(0.12), ct = cHex.clone().multiplyScalar(0.62), cr = cHex.clone().multiplyScalar(1.05);
+    extrude(ring, h, cb, ct, cr, pos, colr, edges);
+    const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, color: 0xffffff });
+    const mesh = new THREE.Mesh(geomFrom(pos, colr), mat); mesh.renderOrder = 10; scene.add(mesh);
+    const eMat = new THREE.LineBasicMaterial({ color: cHex.clone().multiplyScalar(1.4), transparent: true, opacity: 1 });
+    const edge = new THREE.LineSegments(geomFrom(edges), eMat); edge.renderOrder = 11; scene.add(edge);
+
+    const labelY = h + (c.tier === 3 ? 260 : 170) + (i % 3) * 55;
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, labelY - h, 8, 1, true).translate(0, (labelY - h) / 2 + h, 0), beamMat(sec.color));
+    beam.position.set(ax, 0, az); beam.renderOrder = 13; scene.add(beam);
+
+    const ringMat = new THREE.MeshBasicMaterial({ color: cHex, transparent: true, opacity: 0.5, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending });
+    const halo = new THREE.Mesh(new THREE.RingGeometry(0.86, 1, 48).rotateX(-Math.PI / 2), ringMat);
+    const rad = Math.min(Math.sqrt(ring.reduce((m, p) => Math.max(m, (p[0] - cx) ** 2 + (p[1] - cz) ** 2), 0)) * 1.25 + 40, 700);
+    halo.position.set(cx, 3, cz); halo.scale.setScalar(rad); halo.renderOrder = 6; scene.add(halo);
+
+    const el = document.createElement("button");
+    el.type = "button"; el.className = `tag t${c.tier}`; el.style.setProperty("--c", sec.color);
+    el.setAttribute("aria-label", `${c.name}, ${sec.name}`);
+    el.innerHTML = `<span class="card"><span class="dot"></span><span class="nm"></span><span class="mt">${sec.short}${c.ticker && c.ticker.includes(":") ? " · " + c.ticker.split(":")[1].trim().split(" ")[0] : ""}</span></span>`;
+    el.querySelector(".nm").textContent = c.name;
+    labelsEl.appendChild(el);
+
+    const site = { ...c, sec, cHex, mesh, mat, edge, eMat, beam, halo, rad, el, anchor: new THREE.Vector3(ax, labelY, az), ground: new THREE.Vector3(cx, h, cz), h, idx: i };
+    mesh.userData.site = site; beam.userData.site = site; pickables.push(mesh, beam);
+    el.addEventListener("click", (e) => { e.stopPropagation(); stopTour(); select(site); });
+    return site;
+  });
+  document.getElementById("stat-sites").textContent = sites.length;
+
+  // ---------- landmark labels ----------
+  const landmarks = [];
+  function addLandmark(text, x, y, z, cls) {
+    const el = document.createElement("div"); el.className = "lm " + (cls || ""); el.textContent = text;
+    labelsEl.appendChild(el); landmarks.push({ el, v: new THREE.Vector3(x, y, z) });
+  }
+  addLandmark("I-880", 1655, 20, 3249, "shield");
+  addLandmark("I-680", -155, 20, -3495, "shield");
+  addLandmark("Auto Mall Pkwy", -3512, 20, -617);
+  addLandmark("Mission Blvd", 2227, 20, -2106);
+  addLandmark("Kato Rd", 1199, 20, 1930);
+  addLandmark("Cushing Pkwy", -1503, 20, 262);
+  addLandmark("Warm Springs Blvd", 1979, 20, 1611);
+  { const [x, z] = toXZ(37.5025, -121.9396); addLandmark("◆ BART · Warm Springs / South Fremont", x, 40, z); }
+  { const [x, z] = toXZ(37.5125, -121.8805); addLandmark("▲ Mission Peak · 2,517 ft →", Math.min(x, BX1 + 150), 60, z, "peak"); }
+  addLandmark("37.530°N  121.998°W", BX0, 0, BZ0 - 140, "coord");
+  addLandmark("37.455°N  121.895°W", BX1, 0, BZ1 + 180, "coord");
+  {
+    // city-limit caption at the southernmost boundary point inside the frame
+    let best = null;
+    for (const f of D.bound) for (const p of pts(f)) if (p[0] > BX0 + 600 && p[0] < BX1 - 600 && p[1] < BZ1 + 200 && (!best || p[1] > best[1])) best = p;
+    if (best) addLandmark("Fremont city limit · Milpitas ↓", best[0], 10, best[1] + 120);
+  }
+
+  // district names painted on the ground
+  function groundText(text, x, z, size, rot) {
+    const cv = document.createElement("canvas"); const ctx = cv.getContext("2d");
+    const fs = 120; ctx.font = `900 ${fs}px "Big Shoulders Display", Impact, sans-serif`;
+    const spacing = 26; let w = 0; for (const ch of text) w += ctx.measureText(ch).width + spacing;
+    cv.width = Math.ceil(w + 40); cv.height = fs + 40;
+    ctx.font = `900 ${fs}px "Big Shoulders Display", Impact, sans-serif`;
+    ctx.fillStyle = "rgba(140,160,230,1)"; ctx.textBaseline = "middle";
+    let cx = 20; for (const ch of text) { ctx.fillText(ch, cx, cv.height / 2); cx += ctx.measureText(ch).width + spacing; }
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8;
+    const aspect = cv.width / cv.height;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(size * aspect, size).rotateX(-Math.PI / 2),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.11, depthWrite: false, depthTest: false }));
+    m.position.set(x, 1, z); m.rotation.y = rot || 0; m.renderOrder = 2; scene.add(m);
+  }
+  const paintDistricts = () => {
+    groundText("WARM SPRINGS", 900, 600, 300, 0.5);
+    groundText("NORTHPOLE", -1300, -350, 190, 0.5);
+    groundText("CURTNER", 2100, 3500, 220, 0.5);
+    groundText("IRVINGTON", -1200, -2900, 230, 0.5);
+  };
+  (document.fonts && document.fonts.load) ? document.fonts.load('900 120px "Big Shoulders Display"').then(paintDistricts, paintDistricts) : paintDistricts();
+
+  // ---------- bloom ----------
+  const composer = new THREE.EffectComposer(renderer);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight / 2), 0.85, 0.55, 0.55);
+  composer.addPass(bloom);
+
+  // ---------- legend ----------
+  const sectorsEl = document.getElementById("sectors"), legendEl = document.getElementById("legend"), showAll = document.getElementById("show-all");
+  let activeSector = null;
+  for (const [key, s] of Object.entries(SECTORS)) {
+    const n = sites.filter(x => x.sector === key).length; if (!n) continue;
+    const b = document.createElement("button"); b.type = "button"; b.className = "sec"; b.dataset.key = key; b.style.setProperty("--c", s.color);
+    b.innerHTML = `<i></i><span></span><em>${String(n).padStart(2, "0")}</em>`; b.querySelector("span").textContent = s.name;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => setSector(activeSector === key ? null : key));
+    sectorsEl.appendChild(b);
+  }
+  showAll.addEventListener("click", () => setSector(null));
+  function setSector(key) {
+    activeSector = key;
+    legendEl.classList.toggle("filtering", !!key); showAll.hidden = !key;
+    sectorsEl.querySelectorAll(".sec").forEach(b => { const on = b.dataset.key === key; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+    for (const s of sites) {
+      const on = !key || s.sector === key;
+      s.el.classList.toggle("faded", !on);
+      s.mat.color.setScalar(on ? 1 : 0.18); s.eMat.opacity = on ? 1 : 0.15;
+      s.beam.material.uniforms.a.value = on ? 1 : 0.06; s.halo.visible = on;
+    }
+    if (key) {
+      const group = sites.filter(s => s.sector === key);
+      const box = new THREE.Box3(); group.forEach(s => box.expandByPoint(s.ground));
+      const c = box.getCenter(new THREE.Vector3()); const size = box.getSize(new THREE.Vector3());
+      flyTo(new THREE.Vector3(c.x, 0, c.z), Math.min(Math.max(Math.max(size.x, size.z) * 1.9, 2600), 11000));
+    }
+  }
+
+  // ---------- camera animation ----------
+  let anim = null;
+  const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function flyTo(target, dist, polar, azimuth, dur = 1.5) {
+    const off = camera.position.clone().sub(controls.target);
+    const sph = new THREE.Spherical().setFromVector3(off);
+    const to = new THREE.Spherical(dist ?? sph.radius, polar ?? Math.min(sph.phi, 1.0), azimuth ?? sph.theta);
+    const from = sph.clone(); const t0 = controls.target.clone();
+    // take the short way around
+    let dTheta = to.theta - from.theta; dTheta = ((dTheta + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI; to.theta = from.theta + dTheta;
+    if (reduced) dur = 0.001;
+    anim = { t: 0, dur, from, to, t0, t1: target.clone() };
+  }
+  function stepAnim(dt) {
+    if (!anim) return;
+    anim.t = Math.min(anim.t + dt / anim.dur, 1); const k = ease(anim.t);
+    controls.target.lerpVectors(anim.t0, anim.t1, k);
+    const s = new THREE.Spherical(
+      THREE.MathUtils.lerp(anim.from.radius, anim.to.radius, k) * (1 + Math.sin(k * Math.PI) * 0.12),
+      THREE.MathUtils.lerp(anim.from.phi, anim.to.phi, k),
+      THREE.MathUtils.lerp(anim.from.theta, anim.to.theta, k));
+    camera.position.setFromSpherical(s).add(controls.target);
+    camera.lookAt(controls.target);
+    if (anim.t >= 1) anim = null;
+  }
+  controls.addEventListener("start", () => { anim = null; stopTour(); });
+
+  const HOME = { target: new THREE.Vector3(250, 0, 350), dist: 9800, polar: 0.92, az: -0.62 };
+  function home(dur) { flyTo(HOME.target, HOME.dist, HOME.polar, HOME.az, dur); }
+  // start high overhead, then swoop in
+  camera.position.set(HOME.target.x, 26000, HOME.target.z + 10);
+  controls.target.copy(HOME.target); camera.lookAt(HOME.target);
+  home(3.2);
+
+  // ---------- selection + panel ----------
+  const panel = document.getElementById("panel");
+  let selected = null;
+  function select(site, opts = {}) {
+    if (selected) { selected.el.classList.remove("sel"); selected.mat.color.setScalar(!activeSector || selected.sector === activeSector ? 1 : 0.18); }
+    selected = site;
+    if (!site) { panel.classList.remove("open"); document.body.classList.remove("panel-open"); return; }
+    site.el.classList.add("sel");
+    panel.style.setProperty("--c", site.sec.color);
+    const chip = document.getElementById("p-chip"); chip.style.setProperty("--c", site.sec.color); chip.querySelector("span").textContent = site.sec.name;
+    document.getElementById("p-name").textContent = site.name;
+    document.getElementById("p-stage").textContent = site.stage;
+    const kv = document.getElementById("p-kv"); kv.innerHTML = "";
+    [["Ticker", site.ticker], ["Founded", site.founded], ["Site", site.address + ", Fremont", true], ["Footprint", site.footprint, true]].forEach(([k, v, wide]) => {
+      const d = document.createElement("div"); if (wide) d.className = "wide";
+      const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = v || "—";
+      d.append(dt, dd); kv.appendChild(d);
+    });
+    document.getElementById("p-what").textContent = site.what;
+    const ul = document.getElementById("p-facts"); ul.innerHTML = "";
+    site.facts.forEach(f => { const li = document.createElement("li"); li.textContent = f; ul.appendChild(li); });
+    const [lat, lon] = toLL(site.ground.x, site.ground.z);
+    document.getElementById("p-coords").textContent = `${lat.toFixed(4)}°N  ${Math.abs(lon).toFixed(4)}°W · roof ${Math.round(site.h / V)} m (shown ${V}× tall)`;
+    const order = tourOrder.indexOf(site);
+    document.getElementById("p-idx").textContent = `${String(order + 1).padStart(2, "0")} / ${String(tourOrder.length).padStart(2, "0")}`;
+    panel.classList.add("open"); document.body.classList.add("panel-open");
+    const narrow = innerWidth < 760;
+    // offset the target so the building sits left of the panel (or above the sheet)
+    const t = site.ground.clone(); t.y = 0;
+    flyTo(t, opts.dist || (site.tier === 3 ? 1900 : 1450), 0.95, undefined, opts.dur || 1.6);
+    if (!narrow) {
+      const off = camera.position.clone().sub(controls.target); off.y = 0; off.normalize();
+      const right = new THREE.Vector3(-off.z, 0, off.x);
+      anim.t1.addScaledVector(right, (opts.dist || 1600) * 0.22);
+    } else {
+      const off = camera.position.clone().sub(controls.target); off.y = 0; off.normalize();
+      anim.t1.addScaledVector(off, (opts.dist || 1600) * 0.28);
+    }
+  }
+  document.getElementById("p-close").addEventListener("click", () => { stopTour(); select(null); });
+  const tourOrder = sites.slice().sort((a, b) => (a.ground.z - b.ground.z));
+  const stepSel = (d) => { const i = tourOrder.indexOf(selected); select(tourOrder[(i + d + tourOrder.length) % tourOrder.length]); };
+  document.getElementById("p-prev").addEventListener("click", () => { stopTour(); stepSel(-1); });
+  document.getElementById("p-next").addEventListener("click", () => { stopTour(); stepSel(1); });
+
+  // ---------- tour ----------
+  let tour = null; const TOUR_MS = 6500;
+  const tourBtn = document.getElementById("tour-btn"), tourBar = document.getElementById("tourbar");
+  tourBtn.addEventListener("click", () => {
+    if (activeSector) setSector(null);
+    tour = { i: 0, t: 0 }; select(tourOrder[0], { dur: 2.2 });
+  });
+  function stopTour() { if (tour) { tour = null; tourBar.style.width = "0"; } }
+  function stepTour(dt) {
+    if (!tour) return;
+    tour.t += dt * 1000; tourBar.style.width = Math.min(tour.t / TOUR_MS, 1) * 100 + "%";
+    if (tour.t >= TOUR_MS) {
+      tour.t = 0; tour.i++;
+      if (tour.i >= tourOrder.length) { stopTour(); select(null); home(2.4); return; }
+      select(tourOrder[tour.i], { dur: 2 });
+      tour.t = 0;
+    }
+  }
+
+  // ---------- picking ----------
+  const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+  let downAt = null;
+  renderer.domElement.addEventListener("pointerdown", e => { downAt = [e.clientX, e.clientY]; });
+  renderer.domElement.addEventListener("pointerup", e => {
+    if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
+    mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    const hit = ray.intersectObjects(pickables, false).find(h => { const s = h.object.userData.site; return !activeSector || s.sector === activeSector; });
+    if (hit) { stopTour(); select(hit.object.userData.site); }
+  });
+  let hoverT = 0;
+  renderer.domElement.addEventListener("pointermove", e => {
+    const now = performance.now(); if (now - hoverT < 60 || e.buttons) return; hoverT = now;
+    mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+    ray.setFromCamera(mouse, camera);
+    renderer.domElement.style.cursor = ray.intersectObjects(pickables, false).length ? "pointer" : "";
+  });
+
+  // ---------- dock controls ----------
+  function orbit(dTheta, dPhi) {
+    const off = camera.position.clone().sub(controls.target);
+    const s = new THREE.Spherical().setFromVector3(off);
+    flyTo(controls.target.clone(), s.radius, THREE.MathUtils.clamp(s.phi + dPhi, 0.05, controls.maxPolarAngle), s.theta + dTheta, 0.6);
+  }
+  function zoom(f) { const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target)); flyTo(controls.target.clone(), THREE.MathUtils.clamp(s.radius * f, controls.minDistance, controls.maxDistance), s.phi, s.theta, 0.5); }
+  document.getElementById("zin").onclick = () => zoom(0.6);
+  document.getElementById("zout").onclick = () => zoom(1.6);
+  document.getElementById("rotl").onclick = () => orbit(-Math.PI / 6, 0);
+  document.getElementById("rotr").onclick = () => orbit(Math.PI / 6, 0);
+  document.getElementById("tilt").onclick = () => { const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target)); orbit(0, (s.phi > 0.3 ? 0.02 : 0.95) - s.phi); };
+  document.getElementById("reset").onclick = () => { stopTour(); select(null); setSector(null); home(1.8); };
+  document.getElementById("compass").onclick = () => { const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target)); orbit(-s.theta, 0); };
+  addEventListener("keydown", e => {
+    if (e.target.closest && e.target.closest("input,textarea")) return;
+    const k = e.key.toLowerCase();
+    if (k === "escape") { stopTour(); select(null); }
+    else if (k === "q") orbit(-Math.PI / 12, 0);
+    else if (k === "e") orbit(Math.PI / 12, 0);
+    else if (k === "t") document.getElementById("tilt").click();
+    else if (k === "r") document.getElementById("reset").click();
+    else if (k === "+" || k === "=") zoom(0.7);
+    else if (k === "-") zoom(1.4);
+    else if (selected && k === "arrowright") { stopTour(); stepSel(1); }
+    else if (selected && k === "arrowleft") { stopTour(); stepSel(-1); }
+  });
+  controls.listenToKeyEvents(window);
+
+  // ---------- label projection + declutter ----------
+  const v3 = new THREE.Vector3();
+  const compassSvg = document.querySelector("#compass svg");
+  const scaleRule = document.getElementById("scale-rule"), scaleTxt = document.getElementById("scale-txt");
+  let declutterT = 0;
+  const measure = () => sites.forEach(s => { const was = s.el.classList.contains("min"); s.el.classList.remove("min"); s.w = s.el.offsetWidth; s.hgt = s.el.offsetHeight; if (was) s.el.classList.add("min"); declutterT = 0; });
+  measure();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  function placeLabels(now) {
+    const W = innerWidth, H = innerHeight;
+    const camDist = camera.position.distanceTo(controls.target);
+    for (const s of sites) {
+      v3.copy(s.anchor).project(camera);
+      s.vis = v3.z < 1 && v3.x > -1.2 && v3.x < 1.2 && v3.y > -1.2 && v3.y < 1.2;
+      s.sx = (v3.x + 1) / 2 * W; s.sy = (1 - v3.y) / 2 * H; s.depth = v3.z;
+      s.el.style.transform = `translate(${s.sx}px, ${s.sy}px) translate(-50%, -100%)`;
+      s.el.style.visibility = s.vis ? "visible" : "hidden";
+    }
+    for (const l of landmarks) {
+      v3.copy(l.v).project(camera);
+      const vis = v3.z < 1 && Math.abs(v3.x) < 1.1 && Math.abs(v3.y) < 1.1;
+      l.el.style.visibility = vis ? "visible" : "hidden";
+      l.el.classList.toggle("far", camDist > 7500);
+      l.el.style.transform = `translate(${(v3.x + 1) / 2 * W}px, ${(1 - v3.y) / 2 * H}px) translate(-50%, -50%)`;
+    }
+    if (now - declutterT > 120) {
+      declutterT = now;
+      const placed = [];
+      const ordered = sites.filter(s => s.vis && !(activeSector && s.sector !== activeSector))
+        .sort((a, b) => (b === selected) - (a === selected) || b.tier - a.tier || a.depth - b.depth);
+      for (const s of ordered) {
+        const r = { x0: s.sx - s.w / 2 - 3, x1: s.sx + s.w / 2 + 3, y0: s.sy - s.hgt - 3, y1: s.sy + 3 };
+        const clash = placed.some(p => r.x0 < p.x1 && r.x1 > p.x0 && r.y0 < p.y1 && r.y1 > p.y0);
+        s.el.classList.toggle("min", clash);
+        if (!clash) placed.push(r);
+      }
+    }
+    // compass + scale bar
+    const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+    compassSvg.style.transform = `rotate(${THREE.MathUtils.radToDeg(s.theta)}deg)`;
+    const mpp = 2 * s.radius * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / H;
+    const nice = [50, 100, 200, 250, 500, 1000, 2000, 3000, 5000];
+    const m = nice.find(n => n / mpp >= 80) || 5000;
+    scaleRule.style.width = (m / mpp).toFixed(0) + "px";
+    scaleTxt.textContent = (m >= 1000 ? m / 1000 + " km" : m + " m") + " · " + (m / 1609.34).toFixed(m < 1000 ? 2 : 1) + " mi";
+    scene.fog.density = 0.55 / (s.radius + 9000);
+  }
+
+  // ---------- loop ----------
+  const clock = new THREE.Clock();
+  function frame() {
+    const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, now = performance.now();
+    stepAnim(dt);
+    if (!anim) controls.update();
+    stepTour(dt);
+    if (!reduced) {
+      stepTraffic(dt);
+      for (const s of sites) {
+        s.beam.material.uniforms.t.value = t;
+        const p = (t * 0.45 + s.idx * 0.137) % 1;
+        s.halo.scale.setScalar(s.rad * (0.55 + p * 0.75));
+        s.halo.material.opacity = (1 - p) * (s === selected ? 0.9 : 0.45);
+      }
+    }
+    if (selected) { const k = 1 + Math.sin(t * 4) * 0.12; selected.mat.color.setScalar(k); }
+    placeLabels(now);
+    composer.render();
+    requestAnimationFrame(frame);
+  }
+  if (reduced) stepTraffic(0);
+  addEventListener("resize", () => {
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+    bloom.setSize(innerWidth / 2, innerHeight / 2);
+  });
+  requestAnimationFrame(() => { loadingEl.classList.add("done"); frame(); });
+})();
+</script>
+</body>
+</html>
