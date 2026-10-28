@@ -3,514 +3,433 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Red Sky Forge - Software Engineering</title>
+    <meta name="theme-color" content="#f5f3ed" />
+    <title>Red Sky Forge — Independent AI Engineering for Fintech</title>
+    <meta
+      name="description"
+      content="Independent, senior-level AI engineering for financial services. Production-ready AI agents, RAG systems and workflow automation. Based in the Netherlands, working with European and US clients."
+    />
+    <meta
+      property="og:title"
+      content="Red Sky Forge — AI Engineering for Fintech"
+    />
+    <meta
+      property="og:description"
+      content="25+ years building software. Production-ready AI agents, RAG systems and workflow automation. Independent engineering, delivered end to end."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://redskyforge.com/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650;800&family=Space+Grotesk:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
-    <style>
-      :root {
-        color-scheme: dark;
-        --ink: #f7f4ec;
-        --muted: #b9b0a2;
-        --paper: #11100e;
-        --panel: #1b1915;
-        --line: rgba(247, 244, 236, 0.18);
-        --red: #ff4d35;
-        --gold: #e6b85c;
-        --green: #6bd6a7;
-        --blue: #74b8ff;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        min-height: 100%;
-        background: var(--paper);
-      }
-
-      body {
-        min-height: 100%;
-        margin: 0;
-        color: var(--ink);
-        font-family:
-          Inter,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-        background:
-          radial-gradient(
-            circle at top left,
-            rgba(255, 77, 53, 0.2),
-            transparent 34rem
-          ),
-          linear-gradient(135deg, rgba(230, 184, 92, 0.1), transparent 28rem),
-          var(--paper);
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .page {
-        width: min(1180px, calc(100% - 40px));
-        min-height: 100vh;
-        margin: 0 auto;
-        display: grid;
-        grid-template-rows: 1fr auto;
-      }
-
-      main {
-        padding: clamp(36px, 7vw, 96px) 0 54px;
-      }
-
-      .intro {
-        padding-bottom: clamp(36px, 6vw, 70px);
-        border-bottom: 1px solid var(--line);
-      }
-
-      h1 {
-        margin: 0;
-        font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(2.9rem, 8vw, 7.5rem);
-        line-height: 0.88;
-        letter-spacing: 0;
-        text-wrap: balance;
-      }
-
-      .section-label {
-        margin: clamp(34px, 5vw, 64px) 0 14px;
-        color: var(--muted);
-        font-size: 0.82rem;
-        font-weight: 650;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .products {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1px;
-        border: 1px solid var(--line);
-        background: var(--line);
-      }
-
-      .product {
-        min-height: clamp(300px, 34vw, 390px);
-        padding: clamp(22px, 3vw, 34px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background:
-          linear-gradient(180deg, rgba(255, 77, 53, 0.13), transparent 65%),
-          var(--panel);
-        transition:
-          transform 180ms ease,
-          background-color 180ms ease;
-      }
-
-      .product:nth-child(2) {
-        background:
-          linear-gradient(180deg, rgba(230, 184, 92, 0.14), transparent 65%),
-          var(--panel);
-      }
-
-      .product:nth-child(3) {
-        background:
-          linear-gradient(180deg, rgba(116, 184, 255, 0.13), transparent 65%),
-          var(--panel);
-      }
-
-      .product:hover {
-        transform: translateY(-8px);
-        background-color: #242017;
-      }
-
-      .product-index {
-        color: var(--muted);
-        font-size: 0.9rem;
-        font-weight: 500;
-      }
-
-      .product h2 {
-        margin: 0;
-        font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(2.1rem, 3.5vw, 3.8rem);
-        line-height: 0.92;
-        overflow-wrap: anywhere;
-      }
-
-      .product p {
-        min-height: 4.2em;
-        margin: 18px 0 0;
-        color: var(--muted);
-        font-size: clamp(1rem, 1.35vw, 1.2rem);
-        line-height: 1.4;
-      }
-
-      .product-arrow {
-        display: block;
-        margin-top: 24px;
-        font-size: clamp(2rem, 3vw, 3rem);
-        line-height: 1;
-      }
-
-      .projects {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1px;
-        margin-top: 0;
-        border: 1px solid var(--line);
-        background: var(--line);
-      }
-
-      .project {
-        min-height: clamp(260px, 32vw, 420px);
-        padding: clamp(22px, 3vw, 38px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
-          var(--panel);
-        transition:
-          transform 180ms ease,
-          background-color 180ms ease;
-      }
-
-      .project:hover {
-        transform: translateY(-8px);
-        background-color: #242017;
-      }
-
-      .project:nth-child(2) {
-        background:
-          linear-gradient(180deg, rgba(107, 214, 167, 0.14), transparent),
-          var(--panel);
-      }
-
-      .project:nth-child(3) {
-        background:
-          linear-gradient(180deg, rgba(116, 184, 255, 0.13), transparent),
-          var(--panel);
-      }
-
-      .project-index {
-        color: var(--muted);
-        font-size: clamp(0.95rem, 1.3vw, 1.1rem);
-        font-weight: 500;
-      }
-
-      .project h2 {
-        margin: 0;
-        font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(1.9rem, 3vw, 2.7rem);
-        line-height: 0.9;
-        letter-spacing: 0;
-      }
-
-      .project > div {
-        flex: 1;
-        display: grid;
-        grid-template-rows: auto minmax(4.2em, 1fr) auto;
-        align-items: start;
-      }
-
-      .project p {
-        margin: 22px 0 0;
-        color: var(--muted);
-        font-size: clamp(1.15rem, 1.8vw, 1.55rem);
-        line-height: 1.35;
-      }
-
-      .project-arrow {
-        align-self: flex-start;
-        margin-top: 32px;
-        font-size: clamp(2rem, 4vw, 4rem);
-        line-height: 1;
-      }
-
-      .apps {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 1px;
-        margin-top: 1px;
-        border: 1px solid var(--line);
-        border-top: 0;
-        background: var(--line);
-      }
-
-      .app {
-        min-height: 190px;
-        padding: clamp(18px, 2.2vw, 28px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background: rgba(27, 25, 21, 0.72);
-      }
-
-      .app-index {
-        color: rgba(185, 176, 162, 0.72);
-        font-size: 0.88rem;
-        font-weight: 500;
-      }
-
-      .app h2 {
-        margin: 0;
-        font-family: "Space Grotesk", Inter, sans-serif;
-        font-size: clamp(1.8rem, 2.6vw, 2.1rem);
-        line-height: 0.98;
-        letter-spacing: 0;
-      }
-
-      .app > div {
-        display: grid;
-        grid-template-rows: auto minmax(3.9em, auto);
-        align-items: start;
-      }
-
-      .app p {
-        margin: 16px 0 0;
-        color: var(--muted);
-        font-size: clamp(1rem, 1.25vw, 1.12rem);
-        line-height: 1.35;
-      }
-
-      footer {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 24px;
-        align-items: end;
-        padding: 28px 0 34px;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.7;
-      }
-
-      .company {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px 18px;
-      }
-
-      .company strong {
-        color: var(--ink);
-        font-weight: 650;
-      }
-
-      .footer-links {
-        display: flex;
-        gap: 18px;
-      }
-
-      .footer-links a {
-        color: var(--ink);
-        text-decoration: underline;
-        text-decoration-color: rgba(247, 244, 236, 0.36);
-        text-underline-offset: 4px;
-      }
-
-      @media (max-width: 860px) {
-        footer {
-          grid-template-columns: 1fr;
-        }
-
-        .projects {
-          grid-template-columns: 1fr;
-        }
-
-        .products {
-          grid-template-columns: 1fr;
-        }
-
-        .product {
-          min-height: 260px;
-        }
-
-        .apps {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .project {
-          min-height: 250px;
-        }
-      }
-
-      @media (max-width: 520px) {
-        .page {
-          width: min(100% - 26px, 1180px);
-        }
-
-        main {
-          padding-top: 28px;
-        }
-
-        .footer-links {
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .apps {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page">
-      <main>
-        <section class="intro" aria-label="Red Sky Forge">
-          <h1>RED SKY FORGE</h1>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page-shell">
+      <header class="header">
+        <a class="brand" href="#" aria-label="Red Sky Forge home">
+          <svg
+            class="brand-mark"
+            viewBox="0 0 36 36"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 27 18 3l14 24H4Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M4 27h28M9 19h18M13.5 11h9M18 3v30"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+          </svg>
+          <span
+            >RED SKY FORGE<span class="brand-sub"
+              >INDEPENDENT ENGINEERING</span
+            ></span
+          >
+        </a>
+      </header>
+
+      <main id="main">
+        <section class="hero" aria-labelledby="hero-heading">
+          <div class="hero-copy">
+            <h1 id="hero-heading">AI engineering</h1>
+            <p class="hero-description">
+              Production-ready AI agents, RAG systems, data pipelines and
+              workflow automation.
+            </p>
+            <p class="location">
+              <span class="location-dot"></span> Based in the Netherlands
+              <span class="location-separator">/</span> Working across Europe
+              &amp; the US
+            </p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <svg class="forge-art" viewBox="0 0 500 520" fill="none">
+              <defs>
+                <linearGradient
+                  id="sky"
+                  x1="250"
+                  y1="55"
+                  x2="250"
+                  y2="440"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#ca624b" />
+                  <stop offset=".52" stop-color="#a13d2b" />
+                  <stop offset="1" stop-color="#6c2a20" />
+                </linearGradient>
+                <linearGradient
+                  id="edge"
+                  x1="150"
+                  y1="50"
+                  x2="385"
+                  y2="480"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#e1a28b" />
+                  <stop offset=".4" stop-color="#c16b50" />
+                  <stop offset="1" stop-color="#783423" />
+                </linearGradient>
+                <linearGradient
+                  id="opening"
+                  x1="250"
+                  y1="115"
+                  x2="250"
+                  y2="407"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#4c2822" />
+                  <stop offset=".55" stop-color="#a44c36" />
+                  <stop offset="1" stop-color="#f1ba8b" />
+                </linearGradient>
+                <linearGradient
+                  id="floor"
+                  x1="250"
+                  y1="400"
+                  x2="250"
+                  y2="510"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#d2b8a0" stop-opacity=".6" />
+                  <stop offset="1" stop-color="#eeeae1" stop-opacity="0" />
+                </linearGradient>
+                <pattern
+                  id="grid"
+                  width="40"
+                  height="40"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M40 0H0V40"
+                    stroke="#b4ad9e"
+                    stroke-opacity=".22"
+                    stroke-width=".6"
+                  />
+                </pattern>
+                <filter
+                  id="shadow"
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%"
+                >
+                  <feGaussianBlur stdDeviation="10" />
+                </filter>
+              </defs>
+              <path
+                d="M25 398 250 284l225 114-225 115L25 398Z"
+                fill="url(#grid)"
+                stroke="#c8c1b4"
+                stroke-width=".6"
+              />
+              <ellipse
+                cx="257"
+                cy="426"
+                rx="130"
+                ry="17"
+                fill="#5e4535"
+                opacity=".16"
+                filter="url(#shadow)"
+              />
+              <path
+                d="m132 407 119-68 119 68-119 69-119-69Z"
+                fill="url(#floor)"
+              />
+              <path
+                d="m116 153 49-28 219 126v181l-49 28V279L116 153Z"
+                fill="#8f3d2a"
+              />
+              <path d="m116 153 49-28 219 126-49 28-219-126Z" fill="#d79b7b" />
+              <path
+                d="M116 153v181l49 28V238l119 69v124l51 29V279L116 153Z"
+                fill="url(#sky)"
+              />
+              <path d="m165 238 37-21 119 68-37 22-119-69Z" fill="#e3a886" />
+              <path d="M165 238v124l37-21V217l-37 21Z" fill="#713221" />
+              <path
+                d="M143 108 250 46l107 62v260l-47 27V136l-60-35-60 35v259l-47-27V108Z"
+                fill="url(#edge)"
+              />
+              <path
+                d="m143 108 47 27 60-34 60 35 47-28-107-62-107 62Z"
+                fill="#e5ac8b"
+              />
+              <path
+                d="M190 135v260l60-34 60 34V136l-60-35-60 34Z"
+                fill="url(#opening)"
+              />
+              <path
+                d="M190 135v260l22-13V148l38-22v-25l-60 34Z"
+                fill="#692b22"
+              />
+              <path
+                d="m250 126 38 22v234l22 13V136l-60-35v25Z"
+                fill="#d0815e"
+              />
+              <path
+                d="m212 382 38-22 38 22 22 13-60 35-60-35 22-13Z"
+                fill="#e6b68d"
+              />
+              <path d="M250 360V126" stroke="#e3a681" stroke-opacity=".24" />
+              <path
+                d="m250 430 83 48M250 430l-83 48"
+                stroke="#b4ad9e"
+                stroke-width=".6"
+              />
+              <path
+                d="M76 153h23m-11-12v24M393 108h23m-11-12v24"
+                stroke="#9a9182"
+                stroke-width=".8"
+              />
+              <circle cx="250" cy="46" r="3" fill="#a54a34" />
+              <path
+                d="M250 36V15M239 25h22"
+                stroke="#9a9182"
+                stroke-width=".8"
+              />
+            </svg>
+          </div>
         </section>
 
-        <p class="section-label">Latest products</p>
-        <section class="products" aria-label="Latest products">
-          <a class="product" href="https://riverfish.uk/">
-            <span class="product-index">01 / River data</span>
-            <div>
-              <h2>RiverFish</h2>
-              <p>
-                Freshwater fish evidence from Environment Agency river surveys.
-              </p>
-              <span class="product-arrow" aria-hidden="true">-&gt;</span>
-            </div>
-          </a>
+        <div class="credentials" aria-label="Experience and approach">
+          <div><strong>25+ years</strong><span>building software</span></div>
+          <div>
+            <strong>Financial services, energy &amp; edtech</strong
+            ><span>domain experience</span>
+          </div>
+          <div>
+            <strong>Senior-level</strong><span>independent engineering</span>
+          </div>
+          <div>
+            <strong>Fixed-price</strong><span>end-to-end projects</span>
+          </div>
+        </div>
 
-          <a class="product" href="https://modelrigs.com/">
-            <span class="product-index">02 / Local AI</span>
-            <div>
-              <h2>ModelRigs</h2>
+        <section
+          class="expertise section"
+          id="expertise"
+          aria-labelledby="expertise-heading"
+        >
+          <div class="section-heading">
+            <h2 id="expertise-heading">
+              Productive AI systems
+            </h2>
+          </div>
+          <div class="services">
+            <article class="service">
+              <span class="service-symbol" aria-hidden="true">✳</span>
+              <h3>AI agents &amp;<br />workflow automation</h3>
               <p>
-                Compare local AI hardware on memory fit, measured throughput,
-                and cost of ownership.
+                Purpose-built agents that connect to your systems and take on
+                complex workflows, with evaluation built into the process.
               </p>
-              <span class="product-arrow" aria-hidden="true">-&gt;</span>
-            </div>
-          </a>
+              <div class="service-tags">
+                AGENT SYSTEMS <span>/</span> INTEGRATIONS
+              </div>
+            </article>
+            <article class="service">
+              <svg
+                class="service-symbol"
+                viewBox="0 0 32 32"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="m16 3 13 7-13 7L3 10l13-7Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="m3 16 13 7 13-7M3 22l13 7 13-7"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <h3>RAG &amp;<br />document intelligence</h3>
+              <p>
+                Turn financial documents and fragmented data into usable
+                knowledge. From ingestion pipelines to context-aware retrieval
+                and answers.
+              </p>
+              <div class="service-tags">
+                DATA PIPELINES <span>/</span> RETRIEVAL
+              </div>
+            </article>
+            <article class="service">
+              <svg
+                class="service-symbol"
+                viewBox="0 0 32 32"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 26V14L16 5l10 9v12H6Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M12 26V15h8v11M16 5V1M2 14h28"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <h3>Architecture &amp;<br />production delivery</h3>
+              <p>
+                Senior engineering across the full stack. Cloud infrastructure,
+                application integrations and deployment, with one person
+                accountable for delivery.
+              </p>
+              <div class="service-tags">
+                CLOUD SYSTEMS <span>/</span> DEPLOYMENT
+              </div>
+            </article>
+          </div>
         </section>
 
-        <p class="section-label">Selected work</p>
-        <section class="projects" aria-label="Selected work">
-          <a class="project" href="https://octoloops.com/">
-            <span class="project-index">01</span>
+        <section class="work section" id="work" aria-labelledby="work-heading">
+          <div class="work-heading">
             <div>
-              <h2>OctoLoops</h2>
-              <p>Agent workspaces for indie distribution.</p>
-              <span class="project-arrow" aria-hidden="true">-></span>
+              <h2 id="work-heading">
+                Deep experience
+              </h2>
             </div>
-          </a>
-
-          <a class="project" href="https://processpush.com/">
-            <span class="project-index">02</span>
-            <div>
-              <h2>ProcessPush</h2>
-              <p>
-                Deploy workflow changes across every ClickUp client workspace
-                from one master process.
-              </p>
-              <span class="project-arrow" aria-hidden="true">-></span>
-            </div>
-          </a>
-
-          <a class="project" href="https://findclients.org/">
-            <span class="project-index">03</span>
-            <div>
-              <h2>FindClients</h2>
-              <p>
-                Browse active UK companies by industry and city, with formation
-                and sector data.
-              </p>
-              <span class="project-arrow" aria-hidden="true">-></span>
-            </div>
-          </a>
+            <p>
+              A selection of client engagements
+            </p>
+          </div>
+          <div class="project-list">
+            <article class="project">
+              <div class="project-title">
+                <p class="eyebrow">US / FINTECH</p>
+                <h3>Financial documents,<br />actionable knowledge.</h3>
+              </div>
+              <div class="project-detail">
+                <p>
+                  LLM-powered financial document ingestion and RAG applications
+                  within a financial services platform. Responsible for
+                  architecture, implementation and deployment.
+                </p>
+                <ul class="tags" aria-label="Project capabilities">
+                  <li>Document intelligence</li>
+                  <li>RAG</li>
+                  <li>End-to-end delivery</li>
+                </ul>
+              </div>
+            </article>
+            <article class="project">
+              <div class="project-title">
+                <p class="eyebrow">EUROPE / WEALTH MANAGEMENT</p>
+                <h3>AI at the heart of<br />wealth management.</h3>
+              </div>
+              <div class="project-detail">
+                <p>
+                  Customer-facing AI agents for a European wealth management
+                  startup, alongside data ingestion pipelines, evaluation
+                  systems, financial systems and KYC/AML integrations.
+                </p>
+                <ul class="tags" aria-label="Project capabilities">
+                  <li>AI agents</li>
+                  <li>Evaluation</li>
+                  <li>KYC / AML</li>
+                </ul>
+              </div>
+            </article>
+            <article class="project">
+              <div class="project-title">
+                <p class="eyebrow">US / EDTECH</p>
+                <h3>Intelligent video.<br />Connected systems.</h3>
+              </div>
+              <div class="project-detail">
+                <p>
+                  MCP servers and advanced AI video processing pipelines, with
+                  the cloud infrastructure and application integrations to bring
+                  them into use.
+                </p>
+                <ul class="tags" aria-label="Project capabilities">
+                  <li>MCP</li>
+                  <li>Video processing</li>
+                  <li>Cloud infrastructure</li>
+                </ul>
+              </div>
+            </article>
+          </div>
         </section>
 
-        <section class="apps" aria-label="Smaller apps">
-          <a class="app" href="https://davedx.github.io/mars-power/">
-            <span class="app-index">01</span>
+        <section class="about section" aria-labelledby="about-heading">
+          <div class="about-person">
+            <img
+              src="dave-clayton.png"
+              alt="Dave Clayton, independent engineer at Red Sky Forge"
+              width="112"
+              height="112"
+              loading="lazy"
+            />
             <div>
-              <h2>Mars Power</h2>
-              <p>A planning simulator for exploring energy on Mars.</p>
+              <h3>Dave Clayton</h3>
+              <p>Independent engineer<br />The Netherlands</p>
+              <a
+                class="text-link"
+                href="https://www.linkedin.com/in/daveclayton78/"
+                >Connect on LinkedIn <span aria-hidden="true">↗</span></a
+              >
             </div>
-          </a>
-
-          <a class="app" href="/ef">
-            <span class="app-index">02</span>
-            <div>
-              <h2>Electric Flight</h2>
-              <p>A calculator for electric aircraft range.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://marketraid.us/">
-            <span class="app-index">03</span>
-            <div>
-              <h2>MarketRaid</h2>
-              <p>Diamond-hand the S&amp;P 500 like a WoW raid healer.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://straitsweeper.com/">
-            <span class="app-index">04</span>
-            <div>
-              <h2>StraitSweeper</h2>
-              <p>A Minesweeper clone set in the Strait of Hormuz.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://github.com/davedx/cosmicgpt">
-            <span class="app-index">05</span>
-            <div>
-              <h2>cosmicgpt</h2>
-              <p>A GPT-in-space simulator.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://github.com/davedx/pid_simulator">
-            <span class="app-index">06</span>
-            <div>
-              <h2>pid_simulator</h2>
-              <p>A PID control system in C.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://github.com/davedx/solar-charge">
-            <span class="app-index">07</span>
-            <div>
-              <h2>solar-charge</h2>
-              <p>App to charge EVs from PV.</p>
-            </div>
-          </a>
-
-          <a class="app" href="https://github.com/davedx/algo-trading-tsla">
-            <span class="app-index">08</span>
-            <div>
-              <h2>algo-trading</h2>
-              <p>Algorithmic trading script.</p>
-            </div>
-          </a>
+          </div>
+          <div class="about-copy">
+            <h2 id="about-heading">
+              About Me
+            </h2>
+            <p>
+              I’m an independent engineer with 25+ years of experience building
+              software, including systems for financial services. I work
+              directly with European and US clients, from the first architecture
+              decisions through to production.
+            </p>
+            <p>
+              You work with the person doing the engineering. A clear scope, a
+              fixed price, and responsibility for the whole delivery.
+            </p>
+          </div>
         </section>
       </main>
 
       <footer>
-        <div class="company" aria-label="Company details">
-          <strong>Red Sky Forge</strong>
-          <span>Software Engineering ZZP</span>
-          <span>BTW NL002474526B54</span>
-          <span>KVK 69834660</span>
+        <div class="footer-bottom">
+          <span>© 2026 Red Sky Forge</span>
+          <div>
+            <span>KVK 69834660</span><span>BTW NL002474526B54</span
+            ><span>The Netherlands</span>
+          </div>
+          <a href="#">Back to top ↑</a>
         </div>
-        <nav class="footer-links" aria-label="Footer links">
-          <a href="https://x.com/TechPostsEU">X</a>
-          <a href="https://www.linkedin.com/in/daveclayton78/">LinkedIn</a>
-        </nav>
       </footer>
     </div>
   </body>
